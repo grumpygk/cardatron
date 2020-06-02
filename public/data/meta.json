@@ -1,0 +1,80 @@
+{
+    "meta":{
+        "title":"Shadows of Brimstone - Card-a-tron!",
+
+        "properties":[
+            {"name":"world", "urlPart": 1},
+            {"name":"setType", "urlPart": 2},
+            {"name":"setName", "urlPart": 3},
+            {"name":"groupType", "urlPart": 4},
+            {"name":"groupName", "urlPart": 5},
+            {"name":"keywords", "urlPart":6, "keywords":true, "limit":-1},
+            {"name":"name", "urlPart":-1, "truncateAt":"[.]"}        
+        ],
+        
+        "specialCharacters":{
+            "fileName" : {
+                "duplicateSeparator":"-"
+            },
+            "search" : {
+                "querySeparator" : "&",
+                "propertyEquals" : ":",
+                "doesNotMatchCharacter" : "-",
+                "replacements" : [
+                    {"find": "." , "replace" : "\\b"}
+                ]
+            }
+        },
+        
+        "search":{
+            "minSearchLength":2,
+            "properties":["setType", "setName","groupType","groupName","keywords","name"]
+        },
+
+        "sorting":[
+            {"name": "default",
+                "sort":[
+                    {"property":"setType","direction":"ascending","groupBy":true},
+                    {"property":"setName","direction":"ascending","groupBy":true},
+                    {"property":"groupName","direction":"ascending","groupBy":true},
+                    {"property":"sortWeight", "computed":true, "direction":"ascending","groupBy":true},
+                    {"property":"name","direction":"ascending","groupBy":false}
+                ],
+                "duplicates":{
+                    "checkFields":["setName","groupName","name"]
+                },
+                "toolTip": {
+                    "properties": ["id","setType","setName","groupName","keywords","name"]
+                }            
+            },
+            {"name": "weightName",
+                "sort":[
+                    {"property":"sortWeight", "computed":true, "direction":"ascending","groupBy":true},
+                    {"property":"setName","direction":"ascending","groupBy":false},
+                    {"property":"groupName","direction":"ascending","groupBy":false},
+                    {"property":"name","direction":"ascending","groupBy":false}
+                ],
+                "duplicates":{
+                    "checkFields":["setName","groupName","name"]
+                },
+                "toolTip": {
+                    "properties": ["setType","setName","groupName","keywords","name"]
+                }
+            }
+        ],
+
+        "sizing":{
+            "classPrefix":"i",
+            "sizes":[
+                {"code":"x", "height":1200, "width":1200, "sortWeight":400},
+                {"code":"l", "height":700, "width":700, "sortWeight":300},
+                {"code":"m", "height":550, "width":550, "sortWeight":200},
+                {"code":"s", "height":0, "width":0,"sortWeight":100}
+            ],
+            "orientation":{
+                "portrait":{"code":"p","sortWeight":0},
+                "landscape":{"code":"l", "sortWeight":50}
+            }
+        }
+    }
+}
