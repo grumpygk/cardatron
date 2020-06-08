@@ -36,10 +36,13 @@
             "showCardId": true
         },            
 
-        "sorter":"weightedNames",
+        "sort":{
+            "default":"Weighted Names",
+            "show":true
+        },
 
         "sorting":[
-            {"name": "default",
+            {"name": "Default",
                 "sort":[
                     {"property":"setType","direction":"ascending","groupBy":true},
                     {"property":"setName","direction":"ascending","groupBy":true},
@@ -51,7 +54,7 @@
                     "checkFields":["setName","groupName","name"]
                 }
             },
-            {"name": "weightedNames",
+            {"name": "Weighted Names",
                 "sort":[
                     {"property":"sortWeight", "computed":true, "direction":"ascending","groupBy":true},
                     {"property":"setName","direction":"ascending","groupBy":false},

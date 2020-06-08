@@ -1,7 +1,5 @@
 var cardGroups = [];
 var meta = {};
-var shorter = {};
-var sort = [];
 
 var searchProperties = [];
 var keywordOffset = 0; 
@@ -80,8 +78,6 @@ function init(cardData, metaData) {
     searchProperties = getPropertyPositions(meta.search.properties);
     toolTipProperties = getPropertyPositions(meta.toolTip.properties);
     initSorters();
-    sorter = findSort(meta.sorter);
-    sort = sorter.sort;
     
     if(pageInit) {
         pageInit();
@@ -91,6 +87,10 @@ function init(cardData, metaData) {
 function findSort(sortName) {
     const sorter = meta.sorting.find(({ name }) => name === sortName);
     return sorter;
+}
+
+function getSortInfo() {
+    return {"sorters":meta.sorting.map(s => s.name), "default":meta.sort.default, "show":meta.sort.show};
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -128,7 +128,7 @@ function getCardIds(results) {
     return results.map(card => card.id);
 }
 
-function search(search, supressDuplicates, randomCount, selected, invert) {
+function search(search, supressDuplicates, sortBy, randomCount, selected, invert) {
 
     let queries = applySearchReplace(search).split(meta.specialCharacters.search.querySeparator);
 
@@ -176,9 +176,11 @@ function search(search, supressDuplicates, randomCount, selected, invert) {
         results = chooseRandom(results, randomCount);
     }
 
-    results = sortResults(results);
+    var sorter = findSort(sortBy);
 
-    return makeResults(results, supressDuplicates);
+    results = sortResults(sorter, results);
+
+    return makeResults(results, sorter, supressDuplicates);
 }
 
 function chooseRandom(results, count) {
@@ -202,7 +204,9 @@ function chooseRandom(results, count) {
     return newResults;
 }
 
-function sortResults(results) {
+function sortResults(sorter, results) {
+
+    let sort = sorter.sort;
 
     for (reverseIndex in sort) {
         let index = sort.length - reverseIndex - 1;
@@ -225,8 +229,9 @@ function sortResults(results) {
     return results;
 }
 
-function getGroupBy(result) {
+function getGroupBy(sorter, result) {
     var terms = [];
+    let sort = sorter.sort;
 
     for (index in sort) {
         if (sort[index].groupBy == true) {
@@ -289,7 +294,7 @@ function getToolTip(result) {
     
 }
 
-function makeResults(results, supressDuplicates) {
+function makeResults(results, sorter, supressDuplicates) {
     var newResults = [];
 
     var lastDuplicateCheckValue = "";
@@ -311,7 +316,7 @@ function makeResults(results, supressDuplicates) {
             lastDuplicateCheckValue = duplicateCheckValue;
         }
 
-        newResults.push({"id": card.id, "url": group.path.concat(card.file), "size": getCardSize(card), "grouping": getGroupBy(result).join('/'), "toolTip": getToolTip(result) });
+        newResults.push({"id": card.id, "url": group.path.concat(card.file), "size": getCardSize(card), "grouping": getGroupBy(sorter, result).join('/'), "toolTip": getToolTip(result) });
     }
     return newResults;
 }

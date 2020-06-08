@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <script>
-        function searchForCards(term, supressDuplicates, randomCount, track, selectCardText, invert) {
+        function searchForCards(term, supressDuplicates, sortBy, randomCount, track, selectCardText, invert) {
             var resultsElement = document.getElementById("results");
             var selectCardsElement = document.getElementById("selectedCards");
 
@@ -19,7 +19,7 @@
             var drawnCards = getArrayFromDelimitedText(selectCardText,",");
 
             if (term.length >= minLength) {
-                let results = search(term, supressDuplicates, randomCount, (selectCardText != undefined ? drawnCards : []), invert);
+                let results = search(term, supressDuplicates, sortBy, randomCount, (selectCardText != undefined ? drawnCards : []), invert);
 
                 if(track == true) {
                     drawnCards = getCardIds(results).concat(drawnCards);
@@ -45,7 +45,7 @@
             return i;
         }   
         
-        function getRandomCards(term, excludeDuplicates, count, track, selectCardText, redraw) {
+        function getRandomCards(term, excludeDuplicates, sortBy, count, track, selectCardText, redraw) {
             if(track == true) {
                 
                 if(redraw == true) {                    
@@ -54,18 +54,18 @@
                     selectCardText = cut > 0 ? selectCardText.slice(cut) : "";
                 }
                 
-                searchForCards(term, excludeDuplicates, count, track, selectCardText);
+                searchForCards(term, excludeDuplicates, sortBy, count, track, selectCardText);
             } else {
-                searchForCards(term, excludeDuplicates, count);
+                searchForCards(term, excludeDuplicates, sortBy, count);
             }
         }
 
-        function showExcludedCards(term, suppressDuplicates,  drawn){
-            searchForCards(term, suppressDuplicates, undefined, undefined, drawn, true);
+        function showExcludedCards(term, suppressDuplicates, sortBy, drawn){
+            searchForCards(term, suppressDuplicates, sortBy, undefined, undefined, drawn, true);
         }
 
-        function showRemaingCards(term, suppressDuplicates, drawn){
-            searchForCards(term, suppressDuplicates, undefined, undefined, drawn);
+        function showRemaingCards(term, suppressDuplicates, sortBy, drawn){
+            searchForCards(term, suppressDuplicates, sortBy, undefined, undefined, drawn);
         }
 
         function clearTrack() {
@@ -97,6 +97,26 @@
 
             return html;
         }
+
+        function getSortingOptions(sortInfo) {
+
+            var template = "<option {selected} value=\"{value}\">{name}</option>\n";
+            let html="";
+
+            for(index in sortInfo.sorters) {
+                html += template.replace("{selected}", sortInfo.sorters[index] == sortInfo.default ? "selected":"")
+                .replace("{value}", sortInfo.sorters[index])
+                .replace("{name}", sortInfo.sorters[index]);
+            }
+
+            return html;
+        }
+        
+        function getSelectedSort() {
+            var sortElement = document.getElementById("sort");
+            return sortElement.options[sortElement.selectedIndex].value;
+        }
+        
     </script>
 
 </head>
@@ -105,6 +125,18 @@
     <script>var pageInit = function () {
             var element = document.getElementById("title");
             element.innerHTML = getTitle();
+
+            var sort = document.getElementById("sort");
+            
+            let sortInfo = getSortInfo();
+            sort.innerHTML= getSortingOptions(sortInfo);
+
+            if(sortInfo.show != true) {
+                var sortLabel = document.getElementById("sortLabel");
+                sort.style.visibility = "hidden";
+                sort.style.visibility = "hidden";
+            }
+
         }
     </script>
 
@@ -116,21 +148,23 @@
 
     <h3 id="title">Card-a-tron!</h3>
     <input type="text" placeholder="Search.." id="term" size="50">
-    <button id="doSearch" onclick="searchForCards(term.value.trim(), excludeDuplicates.checked)"><i class="fa fa-search"></i></button>
+    <button id="doSearch" onclick="searchForCards(term.value.trim(), excludeDuplicates.checked, getSelectedSort())"><i class="fa fa-search"></i></button>
     <input type="checkbox" id="excludeDuplicates">
-    <label style="padding-left:5px" for="excludeDuplicates">Exclude Duplicates</label>    
+    <label for="excludeDuplicates">Exclude Duplicates</label>    
+    <label id="sortLabel" style="padding-left:15px" for="sort">Sort:</label>
+    <select id="sort"></select>
     <span style="padding-left:20px"></span>
     <div style="margin-bottom:3px;"></div>
-    <button id="doRandom" onclick="getRandomCards(term.value.trim(), excludeDuplicates.checked, count.value.trim(), track.checked, selectedCards.value)"><i class="fa fa-random"></i></button>
+    <button id="doRandom" onclick="getRandomCards(term.value.trim(), excludeDuplicates.checked, getSelectedSort(), count.value.trim(), track.checked, selectedCards.value)"><i class="fa fa-random"></i></button>
     <input type="text" placeholder="#" id="count" size="5" value="1">    
     <span style="padding-left:5px"></span>
-    <button id="doRedrawRandom" onclick="getRandomCards(term.value.trim(), excludeDuplicates.checked, count.value.trim(), track.checked, selectedCards.value, true)"><i class="fa fa-repeat"></i></button>
+    <button id="doRedrawRandom" onclick="getRandomCards(term.value.trim(), excludeDuplicates.checked, getSelectedSort(), count.value.trim(), track.checked, selectedCards.value, true)"><i class="fa fa-repeat"></i></button>
     <label style="padding-left:5px" for="track">Track</label>
     <input type="checkbox" id="track">    
     <input style="padding-left:5px" type="text" placeholder="Cards Drawn..." id="selectedCards" size="100">
     <button id="clearTrack" onclick="clearTrack()"><i class="fa fa-times"></i></button>
-    <button id="doSearchExcluded" onclick="showExcludedCards(term.value.trim(), excludeDuplicates.checked, selectedCards.value)"><i class="fa fa-align-left"></i></button>
-    <button id="doSearchRemaining" onclick="showRemaingCards(term.value.trim(), excludeDuplicates.checked, selectedCards.value)"><i class="fa fa-align-right"></i></button>
+    <button id="doSearchExcluded" onclick="showExcludedCards(term.value.trim(), excludeDuplicates.checked, getSelectedSort(), selectedCards.value)"><i class="fa fa-align-left"></i></button>
+    <button id="doSearchRemaining" onclick="showRemaingCards(term.value.trim(), excludeDuplicates.checked, getSelectedSort(), selectedCards.value)"><i class="fa fa-align-right"></i></button>
     <div style="margin-bottom:15px;"></div>
     <div id="results"></div>
 
