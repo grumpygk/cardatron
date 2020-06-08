@@ -31,6 +31,13 @@
             "properties":["setType", "setName","groupType","groupName","keywords","name"]
         },
 
+        "toolTip": {
+            "properties": ["setType","setName","groupName","keywords","name"],
+            "showCardId": true
+        },            
+
+        "sorter":"weightedNames",
+
         "sorting":[
             {"name": "default",
                 "sort":[
@@ -42,12 +49,9 @@
                 ],
                 "duplicates":{
                     "checkFields":["setName","groupName","name"]
-                },
-                "toolTip": {
-                    "properties": ["id","setType","setName","groupName","keywords","name"]
-                }            
+                }
             },
-            {"name": "weightName",
+            {"name": "weightedNames",
                 "sort":[
                     {"property":"sortWeight", "computed":true, "direction":"ascending","groupBy":true},
                     {"property":"setName","direction":"ascending","groupBy":false},
@@ -56,9 +60,6 @@
                 ],
                 "duplicates":{
                     "checkFields":["setName","groupName","name"]
-                },
-                "toolTip": {
-                    "properties": ["setType","setName","groupName","keywords","name"]
                 }
             }
         ],

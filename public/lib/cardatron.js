@@ -5,6 +5,7 @@ var sort = [];
 
 var searchProperties = [];
 var keywordOffset = 0; 
+var toolTipProperties = [];
 
 function loadJSON(file, callback) {
 
@@ -47,7 +48,6 @@ function getPropertyPositions(properties) {
 function initSorters() {
     for (sorterIndex in meta.sorting) {
         setSortPositions(meta.sorting[sorterIndex]);
-        meta.sorting[sorterIndex].toolTipProperties = getPropertyPositions(meta.sorting[sorterIndex].toolTip.properties);
         meta.sorting[sorterIndex].duplicateCheckProperties = getPropertyPositions(meta.sorting[sorterIndex].duplicates.checkFields);
     }
 }
@@ -78,8 +78,9 @@ function init(cardData, metaData) {
 
     keywordOffset = getKeywordOffset(meta.properties);
     searchProperties = getPropertyPositions(meta.search.properties);
+    toolTipProperties = getPropertyPositions(meta.toolTip.properties);
     initSorters();
-    sorter = findSort("weightName");
+    sorter = findSort(meta.sorter);
     sort = sorter.sort;
     
     if(pageInit) {
@@ -276,6 +277,18 @@ function getPropertyValues(properties, cardTerms) {
     return values;
 }
 
+function getToolTip(result) {
+    
+    if(meta.toolTip.showCardId != undefined) {
+        if(meta.toolTip.showCardId == true) {
+            return result.card.id + "\n" + getPropertyValues(toolTipProperties, result.cardTerms).join("\n");
+        } 
+    }
+
+    return getPropertyValues(toolTipProperties, result.cardTerms).join("\n");
+    
+}
+
 function makeResults(results, supressDuplicates) {
     var newResults = [];
 
@@ -298,7 +311,7 @@ function makeResults(results, supressDuplicates) {
             lastDuplicateCheckValue = duplicateCheckValue;
         }
 
-        newResults.push({"id": card.id, "url": group.path.concat(card.file), "size": getCardSize(card), "grouping": getGroupBy(result).join('/'), "toolTip": card.id + "\n" + (getPropertyValues(sorter.toolTipProperties, cardTerms).join("\n")) });
+        newResults.push({"id": card.id, "url": group.path.concat(card.file), "size": getCardSize(card), "grouping": getGroupBy(result).join('/'), "toolTip": getToolTip(result) });
     }
     return newResults;
 }
