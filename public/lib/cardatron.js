@@ -1,4 +1,4 @@
-var cards = [];
+var cardGroups = [];
 var meta = {};
 var shorter = {};
 var sort = [];
@@ -73,7 +73,7 @@ function getKeywordOffset(properties) {
     
 }
 function init(cardData, metaData) {
-    cards = cardData.cards;
+    cardGroups = cardData.groups;
     meta = metaData.meta;
 
     keywordOffset = getKeywordOffset(meta.properties);
@@ -139,31 +139,34 @@ function search(search, supressDuplicates, randomCount, selected, invert) {
 
         let supressDuplicatesFlag = (supressDuplicates == true && meta.specialCharacters.fileName.duplicateSeparator != undefined);
 
-        for (index in cards) {
-            let card = cards[index];
+        for (groupIndex in cardGroups) {
+            let group = cardGroups[groupIndex];
+            for (index in group.cards) {
+                let card = group.cards[index];
 
-            if(invert == true) {
-                if(!selected.includes(card.id)) {
+                if(invert == true) {
+                    if(!selected.includes(card.id)) {
+                        continue;
+                    }
+                } else {
+                    if(selected.includes(card.id)){
+                        continue;
+                    }
+                }
+
+                if (card.file.search("\\$") > -1) {
                     continue;
                 }
-            } else {
-                if(selected.includes(card.id)){
+
+                if (supressDuplicatesFlag && card.file.search(meta.specialCharacters.fileName.duplicateSeparator) > -1) {
                     continue;
                 }
-            }
 
-            if (card.url.search("\\$") > -1) {
-                continue;
-            }
+                cardTerms = cardGroups[groupIndex].path.concat(card.file).toLowerCase().split("/");
 
-            if (supressDuplicatesFlag && card.url.search(meta.specialCharacters.fileName.duplicateSeparator) > -1) {
-                continue;
-            }
-
-            cardTerms = card.url.toLowerCase().split("/");
-
-            if (matchCard(cardTerms, searchTerms)) {
-                results.push({ "card": card, "cardTerms": cardTerms });
+                if (matchCard(cardTerms, searchTerms)) {
+                    results.push({ "group":group, "card": card, "cardTerms": cardTerms });
+                }
             }
         }
     }
@@ -280,6 +283,7 @@ function makeResults(results, supressDuplicates) {
 
     for (index in results) {
         let result = results[index];
+        let group = result.group;
         let card = result.card;
         let cardTerms = result.cardTerms;
 
@@ -294,7 +298,7 @@ function makeResults(results, supressDuplicates) {
             lastDuplicateCheckValue = duplicateCheckValue;
         }
 
-        newResults.push({"id": card.id, "url": card.url, "size": getCardSize(card), "grouping": getGroupBy(result).join('/'), "toolTip": card.id + "\n" + (getPropertyValues(sorter.toolTipProperties, cardTerms).join("\n")) });
+        newResults.push({"id": card.id, "url": group.path.concat(card.file), "size": getCardSize(card), "grouping": getGroupBy(result).join('/'), "toolTip": card.id + "\n" + (getPropertyValues(sorter.toolTipProperties, cardTerms).join("\n")) });
     }
     return newResults;
 }

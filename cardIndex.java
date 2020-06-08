@@ -14,6 +14,10 @@ class CardIndex {
     startJSON();
 
     int count = 0;
+    int groupCount=0;
+    int groupCardCount = 0;
+
+    String lastPath = "";
 
     for (File file : files) {
 
@@ -32,15 +36,31 @@ class CardIndex {
       //   continue;
       // }
 
-      final String filePath = path + "\\" + filename;
-      final String fileUrl = filePath.replace('\\', '/');
+      final String urlPath = path.replace('\\', '/') + "/";
       final BufferedImage image = getImage(file.getAbsolutePath());
 
       if(image != null) {
-        printJSON(fileUrl, image.getHeight(), image.getWidth(), count);
+        if(!lastPath.equals(urlPath)) {
+          if(!lastPath.isEmpty()) {
+            endPath();
+          }
+
+          startPath(urlPath, groupCount);
+        
+          lastPath = urlPath;
+          groupCount++;
+          groupCardCount=0;
+        }
+
+        printJSON(filename, image.getHeight(), image.getWidth(), count, groupCardCount);
         count++;
+        groupCardCount++;
       }
 
+    }
+
+    if(!lastPath.isEmpty()) {
+      endPath();
     }
 
     endJSON();
@@ -48,21 +68,33 @@ class CardIndex {
   }
 
   private static void startJSON() {
-    System.out.println("{\"cards\":[");
+    System.out.println("{\"groups\":[");
+  }
+
+  private static void startPath(String path, int groupCount) {
+    if (groupCount > 0) {
+      System.out.println(",");
+    }
+
+    System.out.println("\t{\"path\":\"" + path + "\",\n\t\"cards\":[");
   }
 
   private static void endJSON() {
     System.out.println("]}");
   }
-
-  private static void printJSON(final String url, final int height, int width, final int count) {
-    if (count > 0) {
+ 
+  private static void endPath() {
+    System.out.print("]}");
+  }
+ 
+  private static void printJSON(final String file, final int height, int width, final int count, int groupCardCount) {
+    if (groupCardCount > 0) {
       System.out.println(",");
     }
 
-    System.out.print("{");
+    System.out.print("\t\t{");
     System.out.print("\"id\":\"" + (count + 1) + "\",");
-    System.out.print("\"url\":\"" + url + "\",");
+    System.out.print("\"file\":\"" + file + "\",");
     System.out.print("\"height\":" + height + ",");
     System.out.print("\"width\":" + width + "");
     System.out.print("}");
