@@ -70,6 +70,7 @@ function getKeywordOffset(properties) {
     return offset;
     
 }
+
 function init(cardData, metaData) {
     cardGroups = cardData.groups;
     meta = metaData.meta;
@@ -184,8 +185,6 @@ function search(search, supressDuplicates, sortBy, randomCount, selected, invert
 }
 
 function chooseRandom(results, count) {
-    //do random stuff
-    
     var items = [];
 
     while(items.length < count && items.length < results.length) {
