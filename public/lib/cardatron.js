@@ -304,7 +304,7 @@ function makeResults(results, sorter, supressDuplicates) {
         let card = result.card;
         let cardTerms = result.cardTerms;
 
-        if (supressDuplicates == true) {
+        if (supressDuplicates == true  && sorter.duplicateCheckProperties.length > 0) {
 
             let duplicateCheckValue = getPropertyValues(sorter.duplicateCheckProperties, cardTerms).join('/');
 
