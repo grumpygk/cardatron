@@ -1,9 +1,14 @@
 {
     "meta":{
-        "title":"Card-a-tron!",
+        "title":"Shadows of Brimstone - Card-a-tron!",
 
         "properties":[
-            {"name":"keywords", "urlPart":1, "keywords":true, "limit":-1},
+            {"name":"world", "urlPart": 1},
+            {"name":"setType", "urlPart": 2},
+            {"name":"setName", "urlPart": 3},
+            {"name":"groupType", "urlPart": 4},
+            {"name":"groupName", "urlPart": 5},
+            {"name":"keywords", "urlPart":6, "keywords":true, "limit":-1},
             {"name":"name", "urlPart":-1, "truncateAt":"[.]"}        
         ],
         
@@ -23,27 +28,41 @@
         
         "search":{
             "minSearchLength":2,
-            "properties":["keywords","name"]
+            "properties":["setType", "setName","groupType","groupName","keywords","name"]
         },
 
         "toolTip": {
-            "properties": ["keywords","name"],
+            "properties": ["setType","setName","groupName","keywords","name"],
             "showCardId": true
         },            
 
         "sort":{
-            "default":"Default",
-            "show":false
+            "default":"Weighted Names",
+            "show":true
         },
 
         "sorting":[
             {"name": "Default",
                 "sort":[
+                    {"property":"setType","direction":"ascending","groupBy":true},
+                    {"property":"setName","direction":"ascending","groupBy":true},
+                    {"property":"groupName","direction":"ascending","groupBy":true},
                     {"property":"sortWeight", "computed":true, "direction":"ascending","groupBy":true},
                     {"property":"name","direction":"ascending","groupBy":false}
                 ],
                 "duplicates":{
-                    "checkFields":["name"]
+                    "checkFields":["setName","groupName","name"]
+                }
+            },
+            {"name": "Weighted Names",
+                "sort":[
+                    {"property":"sortWeight", "computed":true, "direction":"ascending","groupBy":true},
+                    {"property":"setName","direction":"ascending","groupBy":false},
+                    {"property":"groupName","direction":"ascending","groupBy":false},
+                    {"property":"name","direction":"ascending","groupBy":false}
+                ],
+                "duplicates":{
+                    "checkFields":["setName","groupName","name"]
                 }
             }
         ],
