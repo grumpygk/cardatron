@@ -116,13 +116,16 @@
             var sortElement = document.getElementById("sort");
             return sortElement.options[sortElement.selectedIndex].value;
         }
-        
-    </script>
 
-</head>
+        function changePageTitle() {
+            var newTitle = window.prompt("Set Document Title",document.title);
 
-<body>
-    <script>var pageInit = function () {
+            if(newTitle != null && newTitle !="") {
+                document.title = newTitle;
+            }
+        }
+
+        var pageInit = function () {
             var element = document.getElementById("title");
             element.innerHTML = getTitle();
 
@@ -136,17 +139,18 @@
                 sort.style.visibility = "hidden";
                 sortLabel.style.visibility = "hidden";
             }
-
         }
-    </script>
 
-    <script>var onImageClick = function (imageUrl) {
+        function onImageClick(imageUrl) {
             var temp = '<img class="popup" src="' + imageUrl + '" />'
             uglipop({ class: 'put', source: 'html', content: temp });
         }
+        
     </script>
-
-    <h3 id="title">Card-a-tron!</h3>
+</head>
+<body>
+    <h3 id="title" ondblclick="changePageTitle()">Card-a-tron!</h3>
+    
     <input type="text" placeholder="Search.." id="term" size="50">
     <button id="doSearch" onclick="searchForCards(term.value.trim(), excludeDuplicates.checked, getSelectedSort())"><i class="fa fa-search"></i></button>
     <input type="checkbox" id="excludeDuplicates">
