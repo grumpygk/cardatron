@@ -11,29 +11,74 @@
 
     <script>
         function searchForCards(term, supressDuplicates, sortBy, randomCount, track, selectCardText, invert) {
-            var resultsElement = document.getElementById("results");
-            var selectCardsElement = document.getElementById("selectedCards");
 
             let minLength = getMinSearchLength();
 
             var drawnCards = getArrayFromDelimitedText(selectCardText,",");
 
+            var results=[];
+
             if (term.length >= minLength) {
-                let results = search(term, supressDuplicates, sortBy, randomCount, (selectCardText != undefined ? drawnCards : []), invert);
+                results = search(term, supressDuplicates, sortBy, randomCount, (selectCardText != undefined ? drawnCards : []), invert);
 
                 if(track == true) {
                     drawnCards = getCardIds(results).concat(drawnCards);
-                    selectCardsElement.value = drawnCards.filter(Boolean).join(",");
-                }
-                
-                if (results.length > 0) {
-                    resultsElement.innerHTML = makeHtml(results);
-                } else {
-                    resultsElement.innerHTML = "<div>No match found</div>";
+                    
+                    selectCardText = drawnCards.filter(Boolean).join(",");
+
+                    elements.selectedCards.value = selectCardText;
+
                 }
             } else {
-                element.innerHTML = "<div>Search term must be at least " + minLength + " characters</div>";
+                results=[];
             }
+
+            let pageData = getPageData(results);
+            history.pushState(pageData, null, null);
+            showPageData(pageData);   
+
+        }
+
+        window.onpopstate = function(e) {
+            if (e.state != null) {
+                showPageData(e.state);
+            }
+        }
+
+        function initHistory() {
+            let pageData = getPageData([]);
+            history.replaceState(pageData, null, null);
+        }
+
+        function showPageData(pageData) {
+
+            document.title = pageData.pageTitle;
+            elements.term.value = pageData.term;
+            elements.excludeDuplicates.checked = pageData.supressDuplicates;
+            
+            elements.sort.value = pageData.sortBy; 
+            
+            elements.count.value = pageData.randomCount;
+            elements.track.checked = pageData.track;
+            elements.selectedCards.value = pageData.selectCardText;
+
+            if (pageData.results.length > 0) {
+                elements.results.innerHTML = makeHtml(pageData.results);
+            } else {
+                let minLength = getMinSearchLength();
+
+                if (pageData.term.length > minLength) {
+                    elements.results.innerHTML = "<div>No match found</div>";
+                } else {
+                    elements.results.innerHTML = "<div>Search term must be at least " + minLength + " characters</div>";
+                }            
+            }
+        }
+
+        function getPageData(results) {
+           return {"pageTitle":document.title, "term":elements.term.value, "supressDuplicates":elements.excludeDuplicates.checked,
+             "sortBy":elements.sort.value, "randomCount":elements.count.value, "track":elements.track.checked,
+              "selectCardText":elements.selectedCards.value, "results":results};
         }
 
         function nthIndex(str, pat, n){
@@ -69,8 +114,7 @@
         }
 
         function clearTrack() {
-            var selectCardsElement = document.getElementById("selectedCards");
-            selectCardsElement.value = "";
+            elements.selectedCards.value = "";
         }
 
         function makeHtml(cards) {
@@ -113,32 +157,30 @@
         }
         
         function getSelectedSort() {
-            var sortElement = document.getElementById("sort");
-            return sortElement.options[sortElement.selectedIndex].value;
+            return elements.sort.options[elements.sort.selectedIndex].value;
         }
 
         function changePageTitle() {
             var newTitle = window.prompt("Set Document Title",document.title);
 
             if(newTitle != null && newTitle !="") {
-                document.title = newTitle;
+                document.title = newTitle;           
+                history.replaceState({"pageTitle":newTitle},null,null);
             }
         }
 
         var pageInit = function () {
-            var element = document.getElementById("title");
-            element.innerHTML = getTitle();
+            elements.title.innerHTML = getTitle();
 
-            var sort = document.getElementById("sort");
-            
             let sortInfo = getSortInfo();
-            sort.innerHTML= getSortingOptions(sortInfo);
+            elements.sort.innerHTML = getSortingOptions(sortInfo);
 
             if(sortInfo.show != true) {
-                var sortLabel = document.getElementById("sortLabel");
-                sort.style.visibility = "hidden";
-                sortLabel.style.visibility = "hidden";
+                elements.sort.style.visibility = "hidden";
+                elements.sortLabel.style.visibility = "hidden";
             }
+
+            initHistory();
         }
 
         function onImageClick(imageUrl) {
@@ -175,19 +217,35 @@
 </body>
 
 <script>
-    document.getElementById("term").addEventListener("keyup", function (event) {
+    
+    var elements = {
+        "term": document.getElementById("term"),
+        "excludeDuplicates":document.getElementById("excludeDuplicates"),
+        "sort":document.getElementById("sort"),
+        "count":document.getElementById("count"),
+        "track":document.getElementById("track"),
+        "results": document.getElementById("results"),
+        "selectedCards": document.getElementById("selectedCards"),
+        "doSearch": document.getElementById("doSearch"),
+        "doRandom": document.getElementById("doRandom"),
+        "title": document.getElementById("title"),
+        "sortLabel": document.getElementById("sortLabel")
+    };
+
+    elements.term.addEventListener("keyup", function (event) {
         event.preventDefault();
         if (event.keyCode === 13) {
-            document.getElementById("doSearch").click();
+            elements.doSearch.click();
         }
     });
 
-    document.getElementById("count").addEventListener("keyup", function (event) {
+    elements.count.addEventListener("keyup", function (event) {
         event.preventDefault();
         if (event.keyCode === 13) {
-            document.getElementById("doRandom").click();
+            elements.doRandom.click();
         }
     });
+
 
 </script>
 
