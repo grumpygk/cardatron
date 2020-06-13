@@ -129,7 +129,7 @@ function getCardIds(results) {
     return results.map(card => card.id);
 }
 
-function search(search, supressDuplicates, sortBy, randomCount, selected, invert) {
+function search(search, supressDuplicates, sort, randomCount, selected, invert) {
 
     let queries = applySearchReplace(search).split(meta.specialCharacters.search.querySeparator);
 
@@ -177,7 +177,7 @@ function search(search, supressDuplicates, sortBy, randomCount, selected, invert
         results = chooseRandom(results, randomCount);
     }
 
-    var sorter = findSort(sortBy);
+    var sorter = findSort(sort);
 
     results = sortResults(sorter, results);
 

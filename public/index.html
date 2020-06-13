@@ -10,23 +10,23 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <script>
-        function searchForCards(term, supressDuplicates, sortBy, randomCount, track, selectCardText, invert) {
+        function searchForCards(term, excludeDuplicates, sort, randomCount, track, selectedCardText, invert) {
 
             let minLength = getMinSearchLength();
 
-            var drawnCards = getArrayFromDelimitedText(selectCardText,",");
+            var drawnCards = getArrayFromDelimitedText(selectedCardText,",");
 
             var results=[];
 
             if (term.length >= minLength) {
-                results = search(term, supressDuplicates, sortBy, randomCount, (selectCardText != undefined ? drawnCards : []), invert);
+                results = search(term, excludeDuplicates, sort, randomCount, (selectedCardText != undefined ? drawnCards : []), invert);
 
                 if(track == true) {
                     drawnCards = getCardIds(results).concat(drawnCards);
                     
-                    selectCardText = drawnCards.filter(Boolean).join(",");
+                    selectedCardText = drawnCards.filter(Boolean).join(",");
 
-                    elements.selectedCards.value = selectCardText;
+                    elements.selectedCards.value = selectedCardText;
 
                 }
             } else {
@@ -34,7 +34,8 @@
             }
 
             let pageData = getPageData(results);
-            history.pushState(pageData, null, null);
+            let url = getPageDataUrl(pageData);
+            history.pushState(pageData, null, url);
             showPageData(pageData);   
 
         }
@@ -47,20 +48,21 @@
 
         function initHistory() {
             let pageData = getPageData([]);
-            history.replaceState(pageData, null, null);
+            let url = getPageDataUrl(pageData);
+            history.replaceState(pageData, null, url);
         }
 
         function showPageData(pageData) {
 
             document.title = pageData.pageTitle;
             elements.term.value = pageData.term;
-            elements.excludeDuplicates.checked = pageData.supressDuplicates;
+            elements.excludeDuplicates.checked = pageData.excludeDuplicates;
             
-            elements.sort.value = pageData.sortBy; 
+            elements.sort.value = pageData.sort; 
             
-            elements.count.value = pageData.randomCount;
+            elements.randomCount.value = pageData.randomCount;
             elements.track.checked = pageData.track;
-            elements.selectedCards.value = pageData.selectCardText;
+            elements.selectedCards.value = pageData.selectedCardText;
 
             if (pageData.results.length > 0) {
                 elements.results.innerHTML = makeHtml(pageData.results);
@@ -76,9 +78,33 @@
         }
 
         function getPageData(results) {
-           return {"pageTitle":document.title, "term":elements.term.value, "supressDuplicates":elements.excludeDuplicates.checked,
-             "sortBy":elements.sort.value, "randomCount":elements.count.value, "track":elements.track.checked,
-              "selectCardText":elements.selectedCards.value, "results":results};
+           return {"pageTitle":document.title, "term":elements.term.value, "excludeDuplicates":elements.excludeDuplicates.checked,
+             "sort":elements.sort.value, "randomCount":elements.randomCount.value, "track":elements.track.checked,
+              "selectedCardText":elements.selectedCards.value, "results":results};
+        }
+
+        function getPageDataUrl(pageData) {
+            
+            var count = 0;
+            var search = "?";
+
+            for (var key of Object.keys(pageData)) {
+                if(key=="results" || key=="selectedCardText") {
+                    continue;
+                }
+
+                if (count > 0) {
+                    search+="&";
+                }
+
+                search+=key + "=" + encodeURIComponent(pageData[key]);
+
+                count++;
+                
+            }
+
+            return window.location.protocol + "//" + window.location.host + window.location.pathname + search;
+
         }
 
         function nthIndex(str, pat, n){
@@ -90,27 +116,27 @@
             return i;
         }   
         
-        function getRandomCards(term, excludeDuplicates, sortBy, count, track, selectCardText, redraw) {
+        function getRandomCards(term, excludeDuplicates, sort, count, track, selectedCardText, redraw) {
             if(track == true) {
                 
                 if(redraw == true) {                    
-                    let cut = nthIndex(selectCardText, ",", count); 
+                    let cut = nthIndex(selectedCardText, ",", count); 
 
-                    selectCardText = cut > 0 ? selectCardText.slice(cut) : "";
+                    selectedCardText = cut > 0 ? selectedCardText.slice(cut) : "";
                 }
                 
-                searchForCards(term, excludeDuplicates, sortBy, count, track, selectCardText);
+                searchForCards(term, excludeDuplicates, sort, count, track, selectedCardText);
             } else {
-                searchForCards(term, excludeDuplicates, sortBy, count);
+                searchForCards(term, excludeDuplicates, sort, count);
             }
         }
 
-        function showExcludedCards(term, suppressDuplicates, sortBy, drawn){
-            searchForCards(term, suppressDuplicates, sortBy, undefined, undefined, drawn, true);
+        function showExcludedCards(term, excludeDuplicates, sort, drawn){
+            searchForCards(term, excludeDuplicates, sort, undefined, undefined, drawn, true);
         }
 
-        function showRemaingCards(term, suppressDuplicates, sortBy, drawn){
-            searchForCards(term, suppressDuplicates, sortBy, undefined, undefined, drawn);
+        function showRemaingCards(term, excludeDuplicates, sort, drawn){
+            searchForCards(term, excludeDuplicates, sort, undefined, undefined, drawn);
         }
 
         function clearTrack() {
@@ -164,8 +190,15 @@
             var newTitle = window.prompt("Set Document Title",document.title);
 
             if(newTitle != null && newTitle !="") {
+
+                let pageData = history.state;
+
                 document.title = newTitle;           
-                history.replaceState({"pageTitle":newTitle},null,null);
+                pageData.pageTitle = newTitle;
+
+                let url = getPageDataUrl(pageData);
+                
+                history.replaceState(pageData,null,url);
             }
         }
 
@@ -180,7 +213,54 @@
                 elements.sortLabel.style.visibility = "hidden";
             }
 
-            initHistory();
+            let execute = setPageDataFromUrl();
+
+            if(execute) {
+                elements.doSearch.click();
+            } else {
+                initHistory();
+            }    
+        }
+
+        function setPageDataFromUrl() {
+
+            var execute = false;
+
+            var params = new URLSearchParams(window.location.search);
+
+            for (let p of params) {
+
+                switch(p[0].toLowerCase()) {
+                    case "pagetitle":
+                        document.title = p[1];
+                        break;
+
+                    case "term":
+                        elements.term.value = p[1];
+                        break;
+
+                    case "excludeduplicates":
+                        elements.excludeDuplicates.checked = p[1] == "true";
+                    break;
+
+                    case "sort":
+                        elements.sort.value = p[1];
+                    break;
+
+                    case "randomcount":
+                        elements.randomCount.value = p[1];
+                    break;
+
+                    case "track":
+                        elements.track.value =  p[1] == "true";
+                    break;
+
+                    case "execute":
+                        execute = p[1] == "true";
+                        break;
+                }               
+            }
+            return execute;
         }
 
         function onImageClick(imageUrl) {
@@ -201,10 +281,10 @@
     <select id="sort"></select>
     <span style="padding-left:20px"></span>
     <div style="margin-bottom:3px;"></div>
-    <button id="doRandom" onclick="getRandomCards(term.value.trim(), excludeDuplicates.checked, getSelectedSort(), count.value.trim(), track.checked, selectedCards.value)"><i class="fa fa-random"></i></button>
-    <input type="text" placeholder="#" id="count" size="5" value="1">    
+    <button id="doRandom" onclick="getRandomCards(term.value.trim(), excludeDuplicates.checked, getSelectedSort(), randomCount.value.trim(), track.checked, selectedCards.value)"><i class="fa fa-random"></i></button>
+    <input type="text" placeholder="#" id="randomCount" size="5" value="1">    
     <span style="padding-left:5px"></span>
-    <button id="doRedrawRandom" onclick="getRandomCards(term.value.trim(), excludeDuplicates.checked, getSelectedSort(), count.value.trim(), track.checked, selectedCards.value, true)"><i class="fa fa-repeat"></i></button>
+    <button id="doRedrawRandom" onclick="getRandomCards(term.value.trim(), excludeDuplicates.checked, getSelectedSort(), randomCount.value.trim(), track.checked, selectedCards.value, true)"><i class="fa fa-repeat"></i></button>
     <label style="padding-left:5px" for="track">Track</label>
     <input type="checkbox" id="track">    
     <input style="padding-left:5px" type="text" placeholder="Cards Drawn..." id="selectedCards" size="100">
@@ -222,7 +302,7 @@
         "term": document.getElementById("term"),
         "excludeDuplicates":document.getElementById("excludeDuplicates"),
         "sort":document.getElementById("sort"),
-        "count":document.getElementById("count"),
+        "randomCount":document.getElementById("randomCount"),
         "track":document.getElementById("track"),
         "results": document.getElementById("results"),
         "selectedCards": document.getElementById("selectedCards"),
@@ -239,7 +319,7 @@
         }
     });
 
-    elements.count.addEventListener("keyup", function (event) {
+    elements.randomCount.addEventListener("keyup", function (event) {
         event.preventDefault();
         if (event.keyCode === 13) {
             elements.doRandom.click();
