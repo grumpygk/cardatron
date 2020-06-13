@@ -14,33 +14,33 @@
 
             let minLength = getMinSearchLength();
 
-            var drawnCards = getArrayFromDelimitedText(selectedCardText,",");
+            var drawnCards = getArrayFromDelimitedText(selectedCardText, ",");
 
-            var results=[];
+            var results = [];
 
             if (term.length >= minLength) {
                 results = search(term, excludeDuplicates, sort, randomCount, (selectedCardText != undefined ? drawnCards : []), invert);
 
-                if(track == true) {
+                if (track == true) {
                     drawnCards = getCardIds(results).concat(drawnCards);
-                    
+
                     selectedCardText = drawnCards.filter(Boolean).join(",");
 
                     elements.selectedCards.value = selectedCardText;
 
                 }
             } else {
-                results=[];
+                results = [];
             }
 
             let pageData = getPageData(results);
             let url = getPageDataUrl(pageData);
             history.pushState(pageData, null, url);
-            showPageData(pageData);   
+            showPageData(pageData);
 
         }
 
-        window.onpopstate = function(e) {
+        window.onpopstate = function (e) {
             if (e.state != null) {
                 showPageData(e.state);
             }
@@ -57,9 +57,9 @@
             document.title = pageData.pageTitle;
             elements.term.value = pageData.term;
             elements.excludeDuplicates.checked = pageData.excludeDuplicates;
-            
-            elements.sort.value = pageData.sort; 
-            
+
+            elements.sort.value = pageData.sort;
+
             elements.randomCount.value = pageData.randomCount;
             elements.track.checked = pageData.track;
             elements.selectedCards.value = pageData.selectedCardText;
@@ -73,69 +73,71 @@
                     elements.results.innerHTML = "<div>No match found</div>";
                 } else {
                     elements.results.innerHTML = "<div>Search term must be at least " + minLength + " characters</div>";
-                }            
+                }
             }
         }
 
         function getPageData(results) {
-           return {"pageTitle":document.title, "term":elements.term.value, "excludeDuplicates":elements.excludeDuplicates.checked,
-             "sort":elements.sort.value, "randomCount":elements.randomCount.value, "track":elements.track.checked,
-              "selectedCardText":elements.selectedCards.value, "results":results};
+            return {
+                "pageTitle": document.title, "term": elements.term.value, "excludeDuplicates": elements.excludeDuplicates.checked,
+                "sort": elements.sort.value, "randomCount": elements.randomCount.value, "track": elements.track.checked,
+                "selectedCardText": elements.selectedCards.value, "results": results
+            };
         }
 
         function getPageDataUrl(pageData) {
-            
+
             var count = 0;
             var search = "?";
 
             for (var key of Object.keys(pageData)) {
-                if(key=="results" || key=="selectedCardText") {
+                if (key == "results" || key == "selectedCardText") {
                     continue;
                 }
 
                 if (count > 0) {
-                    search+="&";
+                    search += "&";
                 }
 
-                search+=key + "=" + encodeURIComponent(pageData[key]);
+                search += key + "=" + encodeURIComponent(pageData[key]);
 
                 count++;
-                
+
             }
 
             return window.location.protocol + "//" + window.location.host + window.location.pathname + search;
 
         }
 
-        function nthIndex(str, pat, n){
-            var l = str.length, i= -1;
-            while(n-- && i++<l){
-                i= str.indexOf(pat, i);
+        function nthIndex(str, pat, n) {
+            var l = str.length, i = -1;
+            while (n-- && i++ < l) {
+                i = str.indexOf(pat, i);
                 if (i < 0) break;
             }
             return i;
-        }   
-        
+        }
+
         function getRandomCards(term, excludeDuplicates, sort, count, track, selectedCardText, redraw) {
-            if(track == true) {
-                
-                if(redraw == true) {                    
-                    let cut = nthIndex(selectedCardText, ",", count); 
+            if (track == true) {
+
+                if (redraw == true) {
+                    let cut = nthIndex(selectedCardText, ",", count);
 
                     selectedCardText = cut > 0 ? selectedCardText.slice(cut) : "";
                 }
-                
+
                 searchForCards(term, excludeDuplicates, sort, count, track, selectedCardText);
             } else {
                 searchForCards(term, excludeDuplicates, sort, count);
             }
         }
 
-        function showExcludedCards(term, excludeDuplicates, sort, drawn){
+        function showExcludedCards(term, excludeDuplicates, sort, drawn) {
             searchForCards(term, excludeDuplicates, sort, undefined, undefined, drawn, true);
         }
 
-        function showRemaingCards(term, excludeDuplicates, sort, drawn){
+        function showRemaingCards(term, excludeDuplicates, sort, drawn) {
             searchForCards(term, excludeDuplicates, sort, undefined, undefined, drawn);
         }
 
@@ -171,34 +173,34 @@
         function getSortingOptions(sortInfo) {
 
             var template = "<option {selected} value=\"{value}\">{name}</option>\n";
-            let html="";
+            let html = "";
 
-            for(index in sortInfo.sorters) {
-                html += template.replace("{selected}", sortInfo.sorters[index] == sortInfo.default ? "selected":"")
-                .replace("{value}", sortInfo.sorters[index])
-                .replace("{name}", sortInfo.sorters[index]);
+            for (index in sortInfo.sorters) {
+                html += template.replace("{selected}", sortInfo.sorters[index] == sortInfo.default ? "selected" : "")
+                    .replace("{value}", sortInfo.sorters[index])
+                    .replace("{name}", sortInfo.sorters[index]);
             }
 
             return html;
         }
-        
+
         function getSelectedSort() {
             return elements.sort.options[elements.sort.selectedIndex].value;
         }
 
         function changePageTitle() {
-            var newTitle = window.prompt("Set Document Title",document.title);
+            var newTitle = window.prompt("Set Document Title", document.title);
 
-            if(newTitle != null && newTitle !="") {
+            if (newTitle != null && newTitle != "") {
 
                 let pageData = history.state;
 
-                document.title = newTitle;           
+                document.title = newTitle;
                 pageData.pageTitle = newTitle;
 
                 let url = getPageDataUrl(pageData);
-                
-                history.replaceState(pageData,null,url);
+
+                history.replaceState(pageData, null, url);
             }
         }
 
@@ -208,18 +210,18 @@
             let sortInfo = getSortInfo();
             elements.sort.innerHTML = getSortingOptions(sortInfo);
 
-            if(sortInfo.show != true) {
+            if (sortInfo.show != true) {
                 elements.sort.style.visibility = "hidden";
                 elements.sortLabel.style.visibility = "hidden";
             }
 
             let execute = setPageDataFromUrl();
 
-            if(execute) {
+            if (execute) {
                 elements.doSearch.click();
             } else {
                 initHistory();
-            }    
+            }
         }
 
         function setPageDataFromUrl() {
@@ -230,7 +232,7 @@
 
             for (let p of params) {
 
-                switch(p[0].toLowerCase()) {
+                switch (p[0].toLowerCase()) {
                     case "pagetitle":
                         document.title = p[1];
                         break;
@@ -241,24 +243,24 @@
 
                     case "excludeduplicates":
                         elements.excludeDuplicates.checked = p[1] == "true";
-                    break;
+                        break;
 
                     case "sort":
                         elements.sort.value = p[1];
-                    break;
+                        break;
 
                     case "randomcount":
                         elements.randomCount.value = p[1];
-                    break;
+                        break;
 
                     case "track":
-                        elements.track.value =  p[1] == "true";
-                    break;
+                        elements.track.value = p[1] == "true";
+                        break;
 
                     case "execute":
                         execute = p[1] == "true";
                         break;
-                }               
+                }
             }
             return execute;
         }
@@ -267,43 +269,53 @@
             var temp = '<img class="popup" src="' + imageUrl + '" />'
             uglipop({ class: 'put', source: 'html', content: temp });
         }
-        
+
     </script>
 </head>
+
 <body>
     <h3 id="title" ondblclick="changePageTitle()">Card-a-tron!</h3>
-    
+
     <input type="text" placeholder="Search.." id="term" size="50">
-    <button id="doSearch" onclick="searchForCards(term.value.trim(), excludeDuplicates.checked, getSelectedSort())"><i class="fa fa-search"></i></button>
+    <button id="doSearch" onclick="searchForCards(term.value.trim(), excludeDuplicates.checked, getSelectedSort())"><i
+            class="fa fa-search"></i></button>
     <input type="checkbox" id="excludeDuplicates">
-    <label for="excludeDuplicates">Exclude Duplicates</label>    
+    <label for="excludeDuplicates">Exclude Duplicates</label>
     <label id="sortLabel" style="padding-left:15px" for="sort">Sort:</label>
     <select id="sort"></select>
     <span style="padding-left:20px"></span>
     <div style="margin-bottom:3px;"></div>
-    <button id="doRandom" onclick="getRandomCards(term.value.trim(), excludeDuplicates.checked, getSelectedSort(), randomCount.value.trim(), track.checked, selectedCards.value)"><i class="fa fa-random"></i></button>
-    <input type="text" placeholder="#" id="randomCount" size="5" value="1">    
+    <button id="doRandom"
+        onclick="getRandomCards(term.value.trim(), excludeDuplicates.checked, getSelectedSort(), randomCount.value.trim(), track.checked, selectedCards.value)"><i
+            class="fa fa-random"></i></button>
+    <input type="text" placeholder="#" id="randomCount" size="5" value="1">
     <span style="padding-left:5px"></span>
-    <button id="doRedrawRandom" onclick="getRandomCards(term.value.trim(), excludeDuplicates.checked, getSelectedSort(), randomCount.value.trim(), track.checked, selectedCards.value, true)"><i class="fa fa-repeat"></i></button>
+    <button id="doRedrawRandom"
+        onclick="getRandomCards(term.value.trim(), excludeDuplicates.checked, getSelectedSort(), randomCount.value.trim(), track.checked, selectedCards.value, true)"><i
+            class="fa fa-repeat"></i></button>
     <label style="padding-left:5px" for="track">Track</label>
-    <input type="checkbox" id="track">    
+    <input type="checkbox" id="track">
     <input style="padding-left:5px" type="text" placeholder="Cards Drawn..." id="selectedCards" size="100">
     <button id="clearTrack" onclick="clearTrack()"><i class="fa fa-times"></i></button>
-    <button id="doSearchExcluded" onclick="showExcludedCards(term.value.trim(), excludeDuplicates.checked, getSelectedSort(), selectedCards.value)"><i class="fa fa-align-left"></i></button>
-    <button id="doSearchRemaining" onclick="showRemaingCards(term.value.trim(), excludeDuplicates.checked, getSelectedSort(), selectedCards.value)"><i class="fa fa-align-right"></i></button>
+    <button id="doSearchExcluded"
+        onclick="showExcludedCards(term.value.trim(), excludeDuplicates.checked, getSelectedSort(), selectedCards.value)"><i
+            class="fa fa-align-left"></i></button>
+    <button id="doSearchRemaining"
+        onclick="showRemaingCards(term.value.trim(), excludeDuplicates.checked, getSelectedSort(), selectedCards.value)"><i
+            class="fa fa-align-right"></i></button>
     <div style="margin-bottom:15px;"></div>
     <div id="results"></div>
 
 </body>
 
 <script>
-    
+
     var elements = {
         "term": document.getElementById("term"),
-        "excludeDuplicates":document.getElementById("excludeDuplicates"),
-        "sort":document.getElementById("sort"),
-        "randomCount":document.getElementById("randomCount"),
-        "track":document.getElementById("track"),
+        "excludeDuplicates": document.getElementById("excludeDuplicates"),
+        "sort": document.getElementById("sort"),
+        "randomCount": document.getElementById("randomCount"),
+        "track": document.getElementById("track"),
         "results": document.getElementById("results"),
         "selectedCards": document.getElementById("selectedCards"),
         "doSearch": document.getElementById("doSearch"),

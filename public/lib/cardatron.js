@@ -2,7 +2,7 @@ var cardGroups = [];
 var meta = {};
 
 var searchProperties = [];
-var keywordOffset = 0; 
+var keywordOffset = 0;
 var toolTipProperties = [];
 
 function loadJSON(file, callback) {
@@ -62,13 +62,13 @@ function getKeywordOffset(properties) {
     var offset = 0;
 
     for (index in properties) {
-        if(properties[index].urlPart < offset) {
+        if (properties[index].urlPart < offset) {
             offset = properties[index].urlPart;
         };
     }
 
     return offset;
-    
+
 }
 
 function init(cardData, metaData) {
@@ -79,8 +79,8 @@ function init(cardData, metaData) {
     searchProperties = getPropertyPositions(meta.search.properties);
     toolTipProperties = getPropertyPositions(meta.toolTip.properties);
     initSorters();
-    
-    if(pageInit) {
+
+    if (pageInit) {
         pageInit();
     }
 }
@@ -91,7 +91,7 @@ function findSort(sortName) {
 }
 
 function getSortInfo() {
-    return {"sorters":meta.sorting.map(s => s.name), "default":meta.sort.default, "show":meta.sort.show};
+    return { "sorters": meta.sorting.map(s => s.name), "default": meta.sort.default, "show": meta.sort.show };
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -113,13 +113,13 @@ function applySearchReplace(input) {
         let replacement = meta.specialCharacters.search.replacements[index];
         output = output.replace(replacement.find, replacement.replace)
     }
-    
+
     return output;
 }
 
 function getArrayFromDelimitedText(text, delim) {
-    var values=[];
-    if(text != undefined) {
+    var values = [];
+    if (text != undefined) {
         values = values.concat(text.split(delim).map(Function.prototype.call, String.prototype.trim));
     }
     return values;
@@ -146,12 +146,12 @@ function search(search, supressDuplicates, sort, randomCount, selected, invert) 
             for (index in group.cards) {
                 let card = group.cards[index];
 
-                if(invert == true) {
-                    if(!selected.includes(card.id)) {
+                if (invert == true) {
+                    if (!selected.includes(card.id)) {
                         continue;
                     }
                 } else {
-                    if(selected.includes(card.id)){
+                    if (selected.includes(card.id)) {
                         continue;
                     }
                 }
@@ -167,13 +167,13 @@ function search(search, supressDuplicates, sort, randomCount, selected, invert) 
                 cardTerms = cardGroups[groupIndex].path.concat(card.file).toLowerCase().split("/");
 
                 if (matchCard(cardTerms, searchTerms)) {
-                    results.push({ "group":group, "card": card, "cardTerms": cardTerms });
+                    results.push({ "group": group, "card": card, "cardTerms": cardTerms });
                 }
             }
         }
     }
 
-    if(randomCount != undefined) {
+    if (randomCount != undefined) {
         results = chooseRandom(results, randomCount);
     }
 
@@ -187,16 +187,16 @@ function search(search, supressDuplicates, sort, randomCount, selected, invert) 
 function chooseRandom(results, count) {
     var items = [];
 
-    while(items.length < count && items.length < results.length) {
+    while (items.length < count && items.length < results.length) {
         let item = Math.floor((Math.random() * results.length));
-        if(!items.includes(item)) {
+        if (!items.includes(item)) {
             items.push(item);
         }
     }
 
     var newResults = [];
 
-    for(i = 0; i < items.length; i++) {
+    for (i = 0; i < items.length; i++) {
         newResults.push(results[items[i]]);
     }
 
@@ -263,8 +263,8 @@ function getPropertyValue(property, cardTerms) {
 
 
     for (var cardTermIndex = start; cardTermIndex <= end; cardTermIndex++) {
-        if(property.truncateAt != undefined) {
-            values.push(cardTerms[cardTermIndex].substring(0,cardTerms[cardTermIndex].search(property.truncateAt)));
+        if (property.truncateAt != undefined) {
+            values.push(cardTerms[cardTermIndex].substring(0, cardTerms[cardTermIndex].search(property.truncateAt)));
         } else {
             values.push(cardTerms[cardTermIndex]);
         }
@@ -282,15 +282,15 @@ function getPropertyValues(properties, cardTerms) {
 }
 
 function getToolTip(result) {
-    
-    if(meta.toolTip.showCardId != undefined) {
-        if(meta.toolTip.showCardId == true) {
+
+    if (meta.toolTip.showCardId != undefined) {
+        if (meta.toolTip.showCardId == true) {
             return result.card.id + "\n" + getPropertyValues(toolTipProperties, result.cardTerms).join("\n");
-        } 
+        }
     }
 
     return getPropertyValues(toolTipProperties, result.cardTerms).join("\n");
-    
+
 }
 
 function makeResults(results, sorter, supressDuplicates) {
@@ -304,7 +304,7 @@ function makeResults(results, sorter, supressDuplicates) {
         let card = result.card;
         let cardTerms = result.cardTerms;
 
-        if (supressDuplicates == true  && sorter.duplicateCheckProperties.length > 0) {
+        if (supressDuplicates == true && sorter.duplicateCheckProperties.length > 0) {
 
             let duplicateCheckValue = getPropertyValues(sorter.duplicateCheckProperties, cardTerms).join('/');
 
@@ -315,7 +315,7 @@ function makeResults(results, sorter, supressDuplicates) {
             lastDuplicateCheckValue = duplicateCheckValue;
         }
 
-        newResults.push({"id": card.id, "url": group.path.concat(card.file), "size": getCardSize(card), "grouping": getGroupBy(sorter, result).join('/'), "toolTip": getToolTip(result) });
+        newResults.push({ "id": card.id, "url": group.path.concat(card.file), "size": getCardSize(card), "grouping": getGroupBy(sorter, result).join('/'), "toolTip": getToolTip(result) });
     }
     return newResults;
 }
@@ -357,28 +357,28 @@ function matchCard(cardTerms, searchTerms) {
 
     for (var index = 0; index < searchTerms.length; index++) {
 
-        if(searchTerms[index].search(meta.specialCharacters.search.propertyEquals) > 0) {
+        if (searchTerms[index].search(meta.specialCharacters.search.propertyEquals) > 0) {
             let parts = searchTerms[index].split(meta.specialCharacters.search.propertyEquals);
             let position = getPropertyPosition(parts[0], false);
 
-            var doesNotMatchFlag = parts[1].startsWith(meta.specialCharacters.search.doesNotMatchCharacter);            
+            var doesNotMatchFlag = parts[1].startsWith(meta.specialCharacters.search.doesNotMatchCharacter);
             var searchTerm = doesNotMatchFlag ? parts[1].slice(meta.specialCharacters.search.doesNotMatchCharacter.length) : parts[1];
 
-            if(position != undefined) {
+            if (position != undefined) {
                 match = matchTermToProperty(position, cardTerms, searchTerm);
-                match = doesNotMatchFlag ? !match : match;    
+                match = doesNotMatchFlag ? !match : match;
             } else {
                 match = false;
             }
 
-            if(match != true) {
+            if (match != true) {
                 break;
             }
-            
+
         } else {
             var termMatch = false;
 
-            var doesNotMatchFlag = searchTerms[index].startsWith(meta.specialCharacters.search.doesNotMatchCharacter);            
+            var doesNotMatchFlag = searchTerms[index].startsWith(meta.specialCharacters.search.doesNotMatchCharacter);
             var searchTerm = doesNotMatchFlag ? searchTerms[index].slice(meta.specialCharacters.search.doesNotMatchCharacter.length) : searchTerms[index];
 
             for (var searchIndex = 0; searchIndex < searchProperties.length; searchIndex++) {
@@ -399,11 +399,11 @@ function matchCard(cardTerms, searchTerms) {
 
         };
     }
-    
+
     return match;
 }
 
-function matchTermToProperty(property, cardTerms, searchTerm){
+function matchTermToProperty(property, cardTerms, searchTerm) {
     var termMatch = false;
 
     let start = property.urlPart != -1 ? property.urlPart : cardTerms.length - 1;
