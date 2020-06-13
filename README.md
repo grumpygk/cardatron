@@ -127,7 +127,7 @@ Example:
 
   You might find other creative uses for replacements.
 
-### Speaking of free functionality - the '|' charater in searches
+### Speaking of free functionality - 'or' condition - the '|' charater in searches
 
 I mentioned how regex is used bt the javascript search functionality, well another benefit of this is that when I wanted to enable 'or' functionality I did not have to code it.  The '|' character in regex indicates an or condition.
 
@@ -135,9 +135,84 @@ Example:
 
     artifact|gear gun|rifle|pistol -- searches for items that have keywords or properties that contain 'gear' or 'artifact'  *and*  'gun' or 'rifle' or 'pistol'
 
+#### Meta >> search
 
+    "search":{
+        "minSearchLength":2,
+        "properties":["setType", "setName","groupType","groupName","keywords","name"]
+    },
 
+    minSearchLength - minimun number of charaters that must be entered before a search will be run
+    properties - list of properties that will be searched during query execution
 
+#### Meta >> sort
 
+    "sort":{
+        "default":"Default",
+        "show":false
+    },
 
-## 
+    default - search (see sorting) to enable by default
+    show - show sorting drop down (should be false if only 1 sort)
+
+#### Meta >> sorting
+
+    "sorting":[
+        {"name": "Default",
+            "sort":[
+                {"property":"sortWeight", "computed":true, "direction":"ascending","groupBy":true},
+                {"property":"name","direction":"ascending","groupBy":false}
+            ],
+            "duplicates":{
+                "checkFields":[]
+            }
+        }
+    ],
+
+Sorting contains the defined sorts available, each sort has the following properites
+
+    name - the name of the sort (will sow in drop downif enabled)
+
+    sort - list of properties included in sort 
+        each properties can have the following
+            property - the name of the property to be sorted on
+            computed - indicates this is a computed property, only sortWeight has this at the moment
+            direction - ascending or decending 
+            groupBy - used to break search results into groups for display
+
+    duplicates.checkFields - list of properties considered when trying to eliminate duplicate cards from sorted search results
+
+#### Meta >> sizing
+
+    "sizing":{
+                "classPrefix":"i",
+                "sizes":[
+                    {"code":"x", "height":1200, "width":1200, "sortWeight":400},
+                    {"code":"l", "height":700, "width":700, "sortWeight":300},
+                    {"code":"m", "height":550, "width":550, "sortWeight":200},
+                    {"code":"s", "height":0, "width":0,"sortWeight":100}
+                ],
+                "orientation":{
+                    "portrait":{"code":"p","sortWeight":0},
+                    "landscape":{"code":"l", "sortWeight":50}
+                }
+            }
+
+This information is used to generate a image class property defined in the cardatron.css file that allows the cards to be sized in the html document for diaplay 
+
+    classPrefix -  prefix character of css class definition.
+    sizes - definitions for image sizes expected
+    orientation - definitions for landscape and portrait orientations
+
+From this the following image types are defined:
+
+    ixp - xtra large portrait
+    ixl - xtra large landscape
+    ilp - large portrait
+    ill - large landscape
+    imp - medium portrait
+    iml - medium landscape
+    isp - small portrait
+    isl - small landscape
+
+The sort weight from the image size and orientation are combined to allow for sorting of items based on image size
