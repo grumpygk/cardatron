@@ -216,3 +216,17 @@ From this the following image types are defined:
     isl - small landscape
 
 The sort weight from the image size and orientation are combined to allow for sorting of items based on image size
+
+## Other Stuff
+
+### Java compile commands
+
+javac cardIndex.java
+javac -classpath ".\lib\*" EmbeddedJettyFileServer.java
+
+### Java run commands
+
+java CardIndex public 
+java CardIndex public > public/data/cards.json
+java -classpath ".;.\lib\*" EmbeddedJettyFileServer
+

@@ -24,8 +24,6 @@ hs_err_pid*
 
 # image directory
 /public/images/*
-/jetty/*
-/node_modules/*
 
 #node
 /node_modules/*
@@ -33,3 +31,6 @@ package-lock.json
 
 #vscode
 .vscode
+
+#Allow java lib files
+!/lib/*.jar
