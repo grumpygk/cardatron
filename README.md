@@ -221,12 +221,12 @@ The sort weight from the image size and orientation are combined to allow for so
 
 ### Java compile commands
 
-javac cardIndex.java
-javac -classpath ".\lib\*" EmbeddedJettyFileServer.java
+    javac cardIndex.java
+    javac -classpath ".\lib\*" EmbeddedJettyFileServer.java
 
 ### Java run commands
 
-java CardIndex public 
-java CardIndex public > public/data/cards.json
-java -classpath ".;.\lib\*" EmbeddedJettyFileServer
+    java CardIndex public 
+    java CardIndex public > public/data/cards.json
+    java -classpath ".;.\lib\*" EmbeddedJettyFileServer
 
