@@ -6,7 +6,7 @@ var keywordOffset = 0;
 var toolTipProperties = [];
 
 function loadJSON(file, callback) {
-
+    
     var xobj = new XMLHttpRequest();
     xobj.overrideMimeType("application/json");
     xobj.open('GET', file, true); // Replace 'my_data' with the path to your file
@@ -82,6 +82,43 @@ function init(cardData, metaData) {
 
     if (pageInit) {
         pageInit();
+    }
+
+    processKeywordFiles();
+}
+
+function processKeyWordFile(group) {
+
+    loadJSON(group.path + "keywords.json", function (response) {
+        if(response != undefined) {
+            let data = JSON.parse(response);
+
+            for (index in group.cards) {
+                let card = group.cards[index];
+
+                for(dataIndex in data.items) {
+                    let dataItem = data.items[dataIndex];
+
+                    if(dataItem.images.includes(card.file)) {
+                        if(typeof(card.extendedKeywords) === "undefined"){
+                            card.extendedKeywords = dataItem.keywords;
+                        }else{
+                            card.extendedKeywords = card.extendedKeywords.concat(dataItem.keywords);
+                        }
+
+                        console.log(card);
+                    }
+                }
+            }
+
+        }
+    });
+
+}
+
+function processKeywordFiles() {
+    for (groupIndex in cardGroups) {
+        processKeyWordFile(cardGroups[groupIndex]);
     }
 }
 
@@ -165,6 +202,11 @@ function search(search, supressDuplicates, sort, randomCount, selected, invert) 
                 }
 
                 cardTerms = cardGroups[groupIndex].path.concat(card.file).toLowerCase().split("/");
+
+                //Splice in extended keywords into search
+                if (card.extendedKeywords != undefined) {
+                    cardTerms = cardTerms.slice(0,-1).concat(card.extendedKeywords).concat(cardTerms.slice(-1));
+                }
 
                 if (matchCard(cardTerms, searchTerms)) {
                     results.push({ "group": group, "card": card, "cardTerms": cardTerms });
