@@ -90,28 +90,28 @@ function init(cardData, metaData) {
 function processKeyWordFile(group) {
 
     loadJSON(group.path + "keywords.json", function (response) {
-        if(response != undefined) {
-            let data = JSON.parse(response);
+        let data = JSON.parse(response);
 
-            for (index in group.cards) {
-                let card = group.cards[index];
+        for (index in group.cards) {
+            let card = group.cards[index];
 
-                for(dataIndex in data.items) {
-                    let dataItem = data.items[dataIndex];
+            for(dataIndex in data) {
+                let dataItem = data[dataIndex];
+                if(dataItem.images.includes(card.file)) {
+                    //Remove extra spaces, replace spaces with underscore character
+                    let adjustedKeywords = dataItem.keywords.map(function(x){ return x.replace(/\s\s+/g, ' ').replace(" ", "_"); })
 
-                    if(dataItem.images.includes(card.file)) {
-                        if(typeof(card.extendedKeywords) === "undefined"){
-                            card.extendedKeywords = dataItem.keywords;
-                        }else{
-                            card.extendedKeywords = card.extendedKeywords.concat(dataItem.keywords);
-                        }
-
-                        console.log(card);
+                    if(typeof(card.extendedKeywords) === "undefined"){
+                        card.extendedKeywords = adjustedKeywords;
+                    }else{
+                        card.extendedKeywords = card.extendedKeywords.concat(adjustedKeywords);
                     }
+
+                    console.log(card);
                 }
             }
-
         }
+
     });
 
 }
