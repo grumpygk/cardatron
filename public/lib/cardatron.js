@@ -6,7 +6,7 @@ var keywordOffset = 0;
 var toolTipProperties = [];
 
 function loadJSON(file, callback) {
-    
+
     var xobj = new XMLHttpRequest();
     xobj.overrideMimeType("application/json");
     xobj.open('GET', file, true); // Replace 'my_data' with the path to your file
@@ -95,15 +95,15 @@ function processKeyWordFile(group) {
         for (index in group.cards) {
             let card = group.cards[index];
 
-            for(dataIndex in data) {
+            for (dataIndex in data) {
                 let dataItem = data[dataIndex];
-                if(dataItem.images.includes(card.file)) {
+                if (dataItem.images.includes(card.file)) {
                     //Remove extra spaces, replace spaces with underscore character
-                    let adjustedKeywords = dataItem.keywords.map(function(x){ return x.replace(/\s\s+/g, ' ').replace(" ", "_"); })
+                    let adjustedKeywords = dataItem.keywords.map(function (x) { return x.replace(/\s\s+/g, ' ').replace(" ", "_"); })
 
-                    if(typeof(card.extendedKeywords) === "undefined"){
+                    if (typeof (card.extendedKeywords) === "undefined") {
                         card.extendedKeywords = adjustedKeywords;
-                    }else{
+                    } else {
                         card.extendedKeywords = card.extendedKeywords.concat(adjustedKeywords);
                     }
 
@@ -201,14 +201,17 @@ function search(search, supressDuplicates, sort, randomCount, selected, invert) 
                     continue;
                 }
 
-                cardTerms = cardGroups[groupIndex].path.concat(card.file).toLowerCase().split("/");
+                let cardTerms = cardGroups[groupIndex].path.concat(card.file).toLowerCase().split("/");
+                var cardSearchTerms;
 
                 //Splice in extended keywords into search
                 if (card.extendedKeywords != undefined) {
-                    cardTerms = cardTerms.slice(0,-1).concat(card.extendedKeywords).concat(cardTerms.slice(-1));
+                    cardSearchTerms = cardTerms.slice(0, -1).concat(card.extendedKeywords).concat(cardTerms.slice(-1));
+                } else {
+                    cardSearchTerms = cardTerms;
                 }
 
-                if (matchCard(cardTerms, searchTerms)) {
+                if (matchCard(cardSearchTerms, searchTerms)) {
                     results.push({ "group": group, "card": card, "cardTerms": cardTerms });
                 }
             }
@@ -255,7 +258,7 @@ function sortResults(sorter, results) {
         if (sort[index].computed == true) {
             if (sort[index].property === "sortWeight") {
                 let dir = sort[index].direction == "descending" ? -1 : 1;
-                results = results.sort((a, b) => compare(getCardSizeSortWeight(a.card) * dir, getCardSizeSortWeight(b.card) * dir));
+                results = results.sort((a, b) => compare(getCardSortWeight(a.card) * dir, getCardSortWeight(b.card) * dir));
             }
         } else {
             let urlPart = sort[index].positionProperty.urlPart;
@@ -278,7 +281,7 @@ function getGroupBy(sorter, result) {
         if (sort[index].groupBy == true) {
             if (sort[index].computed == true) {
                 if (sort[index].property === "sortWeight") {
-                    terms.push(getCardSizeSortWeight(result.card));
+                    terms.push(getCardSortWeight(result.card));
                 }
             } else {
                 let urlPart = sort[index].positionProperty.urlPart;
@@ -324,14 +327,24 @@ function getPropertyValues(properties, cardTerms) {
 }
 
 function getToolTip(result) {
+    var toolTipTerms = result.cardTerms;
 
-    if (meta.toolTip.showCardId != undefined) {
-        if (meta.toolTip.showCardId == true) {
-            return result.card.id + "\n" + getPropertyValues(toolTipProperties, result.cardTerms).join("\n");
+    if(meta.toolTip.showExtendedKeywords != undefined) {
+        if(meta.toolTip.showExtendedKeywords == true) {
+            //Splice in extended keywords into search
+            if (result.card.extendedKeywords != undefined) {
+                toolTipTerms = result.cardTerms.slice(0, -1).concat(result.card.extendedKeywords).concat(result.cardTerms.slice(-1));
+            }
         }
     }
 
-    return getPropertyValues(toolTipProperties, result.cardTerms).join("\n");
+    if (meta.toolTip.showCardId != undefined) {
+        if (meta.toolTip.showCardId == true) {
+            return result.card.id + "\n" + getPropertyValues(toolTipProperties, toolTipTerms).join("\n");
+        }
+    }
+
+    return getPropertyValues(toolTipProperties, toolTipTerms).join("\n");
 
 }
 
@@ -373,6 +386,15 @@ function compare(a, b) {
 }
 
 function getCardSize(card) {
+    if (card.size != undefined) {
+        return card.size;
+    } else {
+        card.size = computeCardSize(card);
+        return card.size;
+    }
+}
+
+function computeCardSize(card) {
     for (var index = 0; index < meta.sizing.sizes.length; index++) {
         if (card.height > meta.sizing.sizes[index].height || card.width > meta.sizing.sizes[index].width) {
             return meta.sizing.classPrefix
@@ -383,7 +405,16 @@ function getCardSize(card) {
     return "";
 }
 
-function getCardSizeSortWeight(card) {
+function getCardSortWeight(card) {
+    if (card.sortWeight != undefined) {
+        return card.sortWeight;
+    } else {
+        card.sortWeight = computeCardSortWeight(card);
+        return card.sortWeight;
+    }
+}
+
+function computeCardSortWeight(card) {
     for (var index = 0; index < meta.sizing.sizes.length; index++) {
         if (card.height > meta.sizing.sizes[index].height || card.width > meta.sizing.sizes[index].width) {
             return (card.width > card.height ? meta.sizing.orientation.landscape.sortWeight : meta.sizing.orientation.portrait.sortWeight)
@@ -469,6 +500,3 @@ function matchTermToProperty(property, cardTerms, searchTerm) {
 
     return termMatch;
 }
-
-
-

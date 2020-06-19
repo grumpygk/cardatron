@@ -28,7 +28,8 @@
 
         "toolTip": {
             "properties": ["keywords","name"],
-            "showCardId": true
+            "showCardId": true,
+            "showExtendedKeywords": false
         },            
 
         "sort":{
