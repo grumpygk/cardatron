@@ -204,8 +204,8 @@ function search(search, supressDuplicates, sort, randomCount, selected, invert) 
                 let cardTerms = cardGroups[groupIndex].path.concat(card.file).toLowerCase().split("/");
                 var cardSearchTerms;
 
-                //Splice in extended keywords into search
-                if (card.extendedKeywords != undefined) {
+                if((card.extendedKeywords != undefined && meta.search.useExtendedKeywords != undefined && meta.search.useExtendedKeywords == true)) {
+                    //Splice in extended keywords into search
                     cardSearchTerms = cardTerms.slice(0, -1).concat(card.extendedKeywords).concat(cardTerms.slice(-1));
                 } else {
                     cardSearchTerms = cardTerms;
@@ -327,15 +327,13 @@ function getPropertyValues(properties, cardTerms) {
 }
 
 function getToolTip(result) {
-    var toolTipTerms = result.cardTerms;
+    var toolTipTerms;
 
-    if(meta.toolTip.showExtendedKeywords != undefined) {
-        if(meta.toolTip.showExtendedKeywords == true) {
-            //Splice in extended keywords into search
-            if (result.card.extendedKeywords != undefined) {
-                toolTipTerms = result.cardTerms.slice(0, -1).concat(result.card.extendedKeywords).concat(result.cardTerms.slice(-1));
-            }
-        }
+    if((result.card.extendedKeywords != undefined && meta.toolTip.useExtendedKeywords != undefined && meta.toolTip.useExtendedKeywords == true)) {
+        //Splice in extended keywords into terms
+        toolTipTerms = result.cardTerms.slice(0, -1).concat(result.card.extendedKeywords).concat(result.cardTerms.slice(-1));
+    } else {
+        toolTipTerms = result.cardTerms;  
     }
 
     if (meta.toolTip.showCardId != undefined) {

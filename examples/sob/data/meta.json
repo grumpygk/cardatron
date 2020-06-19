@@ -28,12 +28,14 @@
         
         "search":{
             "minSearchLength":2,
-            "properties":["setType", "setName","groupType","groupName","keywords","name"]
+            "properties":["setType", "setName","groupType","groupName","keywords","name"],
+            "useExtendedKeywords": true
         },
 
         "toolTip": {
             "properties": ["setType","setName","groupName","keywords","name"],
-            "showCardId": true
+            "showCardId": true,
+            "useExtendedKeywords": true
         },            
 
         "sort":{

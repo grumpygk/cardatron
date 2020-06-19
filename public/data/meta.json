@@ -23,13 +23,14 @@
         
         "search":{
             "minSearchLength":2,
-            "properties":["keywords","name"]
+            "properties":["keywords","name"],
+            "useExtendedKeywords": true
         },
 
         "toolTip": {
             "properties": ["keywords","name"],
             "showCardId": true,
-            "showExtendedKeywords": false
+            "useExtendedKeywords": true
         },            
 
         "sort":{
