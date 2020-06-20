@@ -26,7 +26,7 @@ class CardIndex {
       final String path = dir.compareTo(args[0]) != 0 ? dir.substring(args[0].length() + 1) : "";
       final String filename = file.getPath().substring(dir.length() + 1);
 
-      if (filename.indexOf(".JPG") == -1) {
+      if(!isImageFile(filename)){
         continue;
       }
 
@@ -67,6 +67,13 @@ class CardIndex {
 
   }
 
+  private static boolean isImageFile(String filename) {
+    String[] parts = filename.split("[.]");
+    String ext = parts[parts.length-1].toLowerCase();
+    
+    return (ext.equals("jpg") || ext.equals("png")); 
+
+  }
   private static void startJSON() {
     System.out.println("{\"groups\":[");
   }
