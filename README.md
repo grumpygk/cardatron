@@ -11,17 +11,56 @@ Example:
     game\cart_type\filename_replace_spaces.jpg
     game\cart_type\filename_replace_spaces-2.jpg
 
-Copy the folders with the images into the public\images folder.
+#### Copy the folders with the images into the public\images folder.
 
-Form the cardatron root folder run the CardIndex program to create the cards.json file.
+#### Create the card data file.
+From the cardatron root folder, run the java executable CardIndex redirecting output to publix/data/cards.json 
 
-```java CardIndex public > public/data/cards.json```
+    java CardIndex public > public/data/cards.json
 
-Bring up a web server for the public folder such as jetty or http-server (using node)
+On windows you can use the batch file indexcard.cmd 
 
-```http-server public```
+    indexcards.cmd
+    
+#### Start the local web server
 
-Using a broswer navigate to localhost:8080
+From the cardatron root folder, run the java executable EmbeddedJettyFileServer 
+
+    java -classpath ".;.\lib\*" EmbeddedJettyFileServer
+
+On windows you can use the batch file start.cmd 
+
+    start.cmd
+
+By default the EmbeddedJettyFileServer runs on port 8080, serving files from the ./public path and will not show directory listings.  Your can override these by passing the optional parameters {port} {path} {dirs allowed}:
+
+    java -classpath ".;.\lib\*" EmbeddedJettyFileServer 8080 ./public false  -- the defaults
+    java -classpath ".;.\lib\*" EmbeddedJettyFileServer 9090  -- will start the server on port 9090
+
+EmbeddedJettyFileServer is provided as a convience, any web server software can be used.
+
+#### Using a broswer navigate to localhost:8080
+
+You should now see the cardatron web page
+
+
+# Additional way to add keywords for images
+## keywords.json file
+
+Some images may have more information that that you may wish to include as keywords than make sense in a file name or folder structure, to handle this you can place a ```keywords.json``` file in each foldr containing images that provide additional keywords that can be searched on or included on card tool tips.
+
+The keywords.json file supports adding one or more keywords to one or more images, the format is as follows:
+
+    [
+        {
+            "keywords":["gunslinger","six shooter template","dead eye","ceberus","hellfire"],
+            "images":["Page_06.JPG"]
+        },
+    ]
+
+these additional keysword are refered to as extended keywords.
+    
+# Customization
 
 ## Meta File
 
@@ -139,11 +178,25 @@ Example:
 
     "search":{
         "minSearchLength":2,
-        "properties":["setType", "setName","groupType","groupName","keywords","name"]
+        "properties":["setType", "setName","groupType","groupName","keywords","name"],
+        "useExtendedKeywords": true
     },
 
     minSearchLength - minimun number of charaters that must be entered before a search will be run
     properties - list of properties that will be searched during query execution
+    useExtendedKeywords - use extended keywords contained in the keywords.json files while processing searches
+
+#### Meta >> sort
+
+    "toolTip": {
+        "properties": ["setType","setName","groupName","keywords","name"],
+        "showCardId": true,
+        "useExtendedKeywords": true
+    },   
+
+    properties - list of properties that will be build the card tool tip
+    showCardId - show the id assigned to each image, this number is used for random card selection tracking and ma have other uses
+    useExtendedKeywords - use extended keywords contained in the keywords.json files while building tool tips
 
 #### Meta >> sort
 
