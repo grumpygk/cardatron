@@ -283,3 +283,10 @@ The sort weight from the image size and orientation are combined to allow for so
     java CardIndex public > public/data/cards.json
     java -classpath ".;.\lib\*" EmbeddedJettyFileServer
 
+## Other code used (not my code)  
+
+To provide a way to run the application withour deploying it to a web server this project makes use of the Jetty Web Server, please refer to https://www.eclipse.org/jetty/ for additional information
+
+For displaying the larger image popup when an image is clicked uglipop.js is being used, please see https://flouthoc.github.io/uglipop.js/ for more information
+
+
