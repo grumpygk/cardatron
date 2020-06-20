@@ -1,12 +1,10 @@
 # cardatron
-
 Cardatron is a web application for handling large collections of gaming cards.
 
-### Disclaimer
-At this point in time, this is not a traditional project, it does not follow normal development standards processes.  It is a work in progress and may eventually evolve into a ***normal*** project. 
+#### Disclaimer
+This project is aimed at non-developers, I did not want to complicate things by using any development technology that was not absolutely necessary.  So at this point in time, it is not a traditional project, it does not follow normal development standards or processes.  It is a work in progress and may eventually evolve into a ***normal*** project. 
 
 ## Usage
-
 Scan your cards into image files and place them into a logical folder structure, the file name and folder names will make up the keywords you will be able to search by.  When naming the image files avoid using special characters and spaces, if you plan on keeping multiple copies of a card images select a character to separate the number from the rest of the file name.  
 
 Example: 
@@ -26,7 +24,6 @@ On windows you can use the batch file indexcard.cmd
     indexcards.cmd
     
 #### Start the local web server
-
 From the cardatron root folder, run the java executable EmbeddedJettyFileServer 
 
     java -classpath ".;.\lib\*" EmbeddedJettyFileServer
@@ -43,20 +40,17 @@ By default the EmbeddedJettyFileServer runs on port 8080, serving files from the
 EmbeddedJettyFileServer is provided as a convenience, any web server software can be used.
 
 #### Using a browser navigate to localhost:8080
-
 You should now see the cardatron web page
-
 
 # Additional way to add keywords for images
 ## keywords.json file
-
 Some images may have more information that that you may wish to include as keywords than make sense in a file name or folder structure, to handle this you can place a ```keywords.json``` file in each folder containing images that provide additional keywords that can be searched on or included on card tool tips.
 
 The keywords.json file supports adding one or more keywords to one or more images, the format is as follows:
 
     [
         {
-            "keywords":["gunslinger","six shooter template","dead eye","ceberus","hellfire"],
+            "keywords":["gunslinger","six shooter template","dead eye","cerberus","hellfire"],
             "images":["Page_06.JPG"]
         },
     ]
@@ -66,7 +60,6 @@ these additional keywords are referred to as extended keywords.
 # Customization
 
 ## Meta File
-
 You can use the data\meta.json to customize the application behavior.
 
 #### Meta >> Title - Tile that shows at the top of the application page
@@ -112,11 +105,9 @@ For the file: images/Shadows_of_Brimstone/Core_Set/Swamps_of_Death/Card/Loot/Sac
     name="Sack_of_Gold_Dust"
 
 ##### Why would you want to map more properties versus just letting everything be a keyword?
-
 Properties allow you to customize how searching, sorting, and tool tips are processed.  That being said you can (should) start off with defining everything as a keyword and make the decision and define properties once you figure out how you want to organize your cards (I have gone thru several iterations of folder structures). You may find that you are happy without getting all complicated with folders and property definitions as you get most of the functionality without it.
 
 #### Meta >> specialCharacters - Characters that have special meaning for searching and processing
-
     "specialCharacters":{
         "fileName" : {
             "duplicateSeparator":"-"
@@ -132,7 +123,6 @@ Properties allow you to customize how searching, sorting, and tool tips are proc
     },
 
 #### filename.duplicateSeparator - defines how duplicate card image files are denoted.  
-
 So for this meta data the duplicate separator is defined as '-', so the '-' character is used to indicates that what follow is the copy # of the card.  The original file should be defined without a copy number. 
 
 Example:
@@ -141,19 +131,16 @@ Example:
     game\cart_type\filename-2.jpg -- second copy of card, can be excluded from searches using 'exclude duplicates' option.
 
 #### search.querySeparator - character that allows multiple queries to be combined in one search request.  
-
 So for this meta data the querySeparator is defined as '&', so as an example:
 
     artifact gun & gear gun -- would execute a query for 'artifact gun' and 'gear gun' and combine the results for display
 
 #### search.propertyEquals - character that indicates that the preceding term is to be treated as a property value.  
-
 So for this meta data the propertyEquals character is defined as ':', so as an example:
 
     groupname:artifact name:gun -- would execute a query for cards where the 'groupName' property contains 'artifact' and the 'name' property contains 'gun'
 
 #### search.doesNotMatchCharacter - character that indicates that items that have the following term are to be excluded from the results.  
-
 So for this meta data the doesNotMatchCharacter character is defined as '-', so as an example:
 
     -gun groupname:artifact undead -- would execute a query for cards where the 'groupName' property contains 'artifact' and any property or keyword contains 'undead' but none of the properties or keywords contain 'gun'.
@@ -161,7 +148,6 @@ So for this meta data the doesNotMatchCharacter character is defined as '-', so 
     that can also be applied to properties, as in '-groupname:enemy' would excluded items where the 'groupname' property contained 'enemy'
 
 #### search.replacements - characters that should be replaced in the search term before executing query.
-
 Example:
   {"find": "." , "replace" : "\\b"} -- will find the '.' character and replace it with '\b' (the '\' must be escaped with an extra '\' because of the javascript search method)
 
@@ -170,7 +156,6 @@ Example:
   You might find other creative uses for replacements.
 
 ### Speaking of free functionality - 'or' condition - the '|' character in searches
-
 I mentioned how regex is used bt the javascript search functionality, well another benefit of this is that when I wanted to enable 'or' functionality I did not have to code it.  The '|' character in regex indicates an or condition.
 
 Example:
@@ -178,7 +163,6 @@ Example:
     artifact|gear gun|rifle|pistol -- searches for items that have keywords or properties that contain 'gear' or 'artifact'  *and*  'gun' or 'rifle' or 'pistol'
 
 #### Meta >> search
-
     "search":{
         "minSearchLength":2,
         "properties":["setType", "setName","groupType","groupName","keywords","name"],
@@ -190,7 +174,6 @@ Example:
     useExtendedKeywords - use extended keywords contained in the keywords.json files while processing searches
 
 #### Meta >> sort
-
     "toolTip": {
         "properties": ["setType","setName","groupName","keywords","name"],
         "showCardId": true,
@@ -202,7 +185,6 @@ Example:
     useExtendedKeywords - use extended keywords contained in the keywords.json files while building tool tips
 
 #### Meta >> sort
-
     "sort":{
         "default":"Default",
         "show":false
@@ -212,7 +194,6 @@ Example:
     show - show sorting drop down (should be false if only 1 sort)
 
 #### Meta >> sorting
-
     "sorting":[
         {"name": "Default",
             "sort":[
@@ -239,7 +220,6 @@ Sorting contains the defined sorts available, each sort has the following proper
     duplicates.checkFields - list of properties considered when trying to eliminate duplicate cards from sorted search results
 
 #### Meta >> sizing
-
     "sizing":{
                 "classPrefix":"i",
                 "sizes":[
@@ -274,20 +254,21 @@ From this the following image types are defined:
 The sort weight from the image size and orientation are combined to allow for sorting of items based on image size
 
 ## Other Stuff
-
 ### Java compile commands
-
     javac cardIndex.java
     javac -classpath ".\lib\*" EmbeddedJettyFileServer.java
 
-### Java run commands
+    build.cmd - executes both compile commands
 
-    java CardIndex public 
-    java CardIndex public > public/data/cards.json
-    java -classpath ".;.\lib\*" EmbeddedJettyFileServer
+### Java run commands
+    testindex.cmd - Runs card indexing dumping output to the screen for testing.  Executes the command 'java CardIndex public' 
+
+    indexcards.cmd - Runs card indexing redirecting output to the file 'cards.json' in the 'public/data' folder.  Executes the command 'java CardIndex public > public/data/cards.json'
+
+    start.cmd - Runs the local web server. Executes the command 'java -classpath ".;.\lib\*" EmbeddedJettyFileServer'
+    
 
 ## Other code used (not my code)  
-
 To provide a way to run the application without deploying it to a web server this project makes use of the Jetty Web Server, please refer to https://www.eclipse.org/jetty/ for additional information
 
 For displaying the larger image popup when an image is clicked uglipop.js is being used, please see https://flouthoc.github.io/uglipop.js/ for more information
