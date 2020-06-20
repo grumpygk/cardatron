@@ -2,9 +2,12 @@
 
 Cardatron is a web application for handling large collections of gaming cards.
 
+### Disclaimer
+At this point in time, this is not a traditional project, it does not follow normal development standards processes.  It is a work in progress and may eventually evolve into a ***normal*** project. 
+
 ## Usage
 
-Scan your cards into image files and place them into a logical folder structure, the file name and folder names will make up the keywords you will be able to search by.  When naming the image files avoid using special characters and spaces, if you plan on keeping multiple copies of a card images select a character to seperate the number from the rest of the file name.  
+Scan your cards into image files and place them into a logical folder structure, the file name and folder names will make up the keywords you will be able to search by.  When naming the image files avoid using special characters and spaces, if you plan on keeping multiple copies of a card images select a character to separate the number from the rest of the file name.  
 
 Example: 
 
@@ -37,9 +40,9 @@ By default the EmbeddedJettyFileServer runs on port 8080, serving files from the
     java -classpath ".;.\lib\*" EmbeddedJettyFileServer 8080 ./public false  -- the defaults
     java -classpath ".;.\lib\*" EmbeddedJettyFileServer 9090  -- will start the server on port 9090
 
-EmbeddedJettyFileServer is provided as a convience, any web server software can be used.
+EmbeddedJettyFileServer is provided as a convenience, any web server software can be used.
 
-#### Using a broswer navigate to localhost:8080
+#### Using a browser navigate to localhost:8080
 
 You should now see the cardatron web page
 
@@ -47,7 +50,7 @@ You should now see the cardatron web page
 # Additional way to add keywords for images
 ## keywords.json file
 
-Some images may have more information that that you may wish to include as keywords than make sense in a file name or folder structure, to handle this you can place a ```keywords.json``` file in each foldr containing images that provide additional keywords that can be searched on or included on card tool tips.
+Some images may have more information that that you may wish to include as keywords than make sense in a file name or folder structure, to handle this you can place a ```keywords.json``` file in each folder containing images that provide additional keywords that can be searched on or included on card tool tips.
 
 The keywords.json file supports adding one or more keywords to one or more images, the format is as follows:
 
@@ -58,7 +61,7 @@ The keywords.json file supports adding one or more keywords to one or more image
         },
     ]
 
-these additional keysword are refered to as extended keywords.
+these additional keywords are referred to as extended keywords.
     
 # Customization
 
@@ -68,7 +71,7 @@ You can use the data\meta.json to customize the application behavior.
 
 #### Meta >> Title - Tile that shows at the top of the application page
 
-#### Meta >> Properties - maps folder structure and file to searchable properites
+#### Meta >> Properties - maps folder structure and file to searchable properties
 
 Example:
 
@@ -79,7 +82,7 @@ Example:
 
 For the file: images\world\set\group\keyword1\keyword2\imagefile.jpg
 
-When processing the image urls, the url is split into parts based on the file seperator character '\', these url parts are used to map the folders and file name to property names.
+When processing the image urls, the url is split into parts based on the file separator character '\', these url parts are used to map the folders and file name to property names.
 
 In this case the folders starting with world (urlPart 1) and ending at keyword2 (limit -1 = 1 from the end) would be searchable keywords and the filename imagefile would be the card name (urlPart -1 = = last part of url), trunateAt is used to drop the filename extension from the property. 
 
@@ -130,14 +133,14 @@ Properties allow you to customize how searching, sorting, and tool tips are proc
 
 #### filename.duplicateSeparator - defines how duplicate card image files are denoted.  
 
-So for this meta data the duplicate seperator is defined as '-', so the '-' charater is used to indicates that what follow is the copy # of the card.  The original file should be defined without a copy number. 
+So for this meta data the duplicate separator is defined as '-', so the '-' character is used to indicates that what follow is the copy # of the card.  The original file should be defined without a copy number. 
 
 Example:
 
     game\cart_type\filename.jpg   -- first copy of card
     game\cart_type\filename-2.jpg -- second copy of card, can be excluded from searches using 'exclude duplicates' option.
 
-#### search.querySeparator - character that allows multiple queries to be combined in one serch request.  
+#### search.querySeparator - character that allows multiple queries to be combined in one search request.  
 
 So for this meta data the querySeparator is defined as '&', so as an example:
 
@@ -157,16 +160,16 @@ So for this meta data the doesNotMatchCharacter character is defined as '-', so 
 
     that can also be applied to properties, as in '-groupname:enemy' would excluded items where the 'groupname' property contained 'enemy'
 
-#### search.replacements - characters that should be replaced inthe search term befor executing query.
+#### search.replacements - characters that should be replaced in the search term before executing query.
 
 Example:
-  {"find": "." , "replace" : "\\b"} -- will find the '.' charatcer and replace it with '\b' (the '\' must be escapped with an extra '\' because of the javascript search method)
+  {"find": "." , "replace" : "\\b"} -- will find the '.' character and replace it with '\b' (the '\' must be escaped with an extra '\' because of the javascript search method)
 
-  This weird replacement is actually implementing starts with / ends with functionality.  The javascript search function uses regex, in regex '\b' indicates a matching item should start or end with the term that precedes ot follows the '\b' charatcer.  This is sort of free functionality (I didn't have to code for it other then the replacement).
+  This weird replacement is actually implementing starts with / ends with functionality.  The javascript search function uses regex, in regex '\b' indicates a matching item should start or end with the term that precedes ot follows the '\b' character.  This is sort of free functionality (I didn't have to code for it other then the replacement).
 
   You might find other creative uses for replacements.
 
-### Speaking of free functionality - 'or' condition - the '|' charater in searches
+### Speaking of free functionality - 'or' condition - the '|' character in searches
 
 I mentioned how regex is used bt the javascript search functionality, well another benefit of this is that when I wanted to enable 'or' functionality I did not have to code it.  The '|' character in regex indicates an or condition.
 
@@ -182,7 +185,7 @@ Example:
         "useExtendedKeywords": true
     },
 
-    minSearchLength - minimun number of charaters that must be entered before a search will be run
+    minSearchLength - minimum number of characters that must be entered before a search will be run
     properties - list of properties that will be searched during query execution
     useExtendedKeywords - use extended keywords contained in the keywords.json files while processing searches
 
@@ -222,15 +225,15 @@ Example:
         }
     ],
 
-Sorting contains the defined sorts available, each sort has the following properites
+Sorting contains the defined sorts available, each sort has the following properties
 
-    name - the name of the sort (will sow in drop downif enabled)
+    name - the name of the sort (will show in drop down if enabled)
 
     sort - list of properties included in sort 
         each properties can have the following
             property - the name of the property to be sorted on
             computed - indicates this is a computed property, only sortWeight has this at the moment
-            direction - ascending or decending 
+            direction - ascending or descending 
             groupBy - used to break search results into groups for display
 
     duplicates.checkFields - list of properties considered when trying to eliminate duplicate cards from sorted search results
@@ -251,7 +254,7 @@ Sorting contains the defined sorts available, each sort has the following proper
                 }
             }
 
-This information is used to generate a image class property defined in the cardatron.css file that allows the cards to be sized in the html document for diaplay 
+This information is used to generate a image class property defined in the cardatron.css file that allows the cards to be sized in the html document for display 
 
     classPrefix -  prefix character of css class definition.
     sizes - definitions for image sizes expected
@@ -259,8 +262,8 @@ This information is used to generate a image class property defined in the carda
 
 From this the following image types are defined:
 
-    ixp - xtra large portrait
-    ixl - xtra large landscape
+    ixp - extra large portrait
+    ixl - extra large landscape
     ilp - large portrait
     ill - large landscape
     imp - medium portrait
@@ -285,7 +288,7 @@ The sort weight from the image size and orientation are combined to allow for so
 
 ## Other code used (not my code)  
 
-To provide a way to run the application withour deploying it to a web server this project makes use of the Jetty Web Server, please refer to https://www.eclipse.org/jetty/ for additional information
+To provide a way to run the application without deploying it to a web server this project makes use of the Jetty Web Server, please refer to https://www.eclipse.org/jetty/ for additional information
 
 For displaying the larger image popup when an image is clicked uglipop.js is being used, please see https://flouthoc.github.io/uglipop.js/ for more information
 
