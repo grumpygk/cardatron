@@ -1,0 +1,82 @@
+div.ips {
+    margin: 5px;
+    float: left;
+    width: 196.667px;
+    height: 306.667px;
+    background-size: 100% 100%;
+    border-radius: 12px;
+}
+
+div.ils {
+    margin: 5px;
+    float: left;
+    height: 196.667px;
+    width: 306.667px;
+    background-size: 100% 100%;
+    border-radius: 12px;
+}
+
+div.ipm {
+    margin: 5px;
+    float: left;
+    height: 585px;
+    width: 390px;
+    background-size: 100% 100%;
+    border-radius: 12px;
+}
+
+div.ilm {
+    margin: 5px;
+    float: left;
+    width: 585px;
+    height: 390px;
+    background-size: 100% 100%;
+    border-radius: 12px;
+}
+
+div.ipl {
+    margin: 5px;
+    float: left;
+    height: 585px;
+    width: 390px;
+    background-size: 100% 100%;
+    border-radius: 12px;
+}
+
+div.ill {
+    margin: 5px;
+    float: left;
+    width: 585px;
+    height: 390px;
+    background-size: 100% 100%;
+    border-radius: 12px;
+}
+
+div.ipx {
+    margin: 5px;
+    float: left;
+    height: 585px;
+    width: 390px;
+    background-size: 100% 100%;
+    border-radius: 12px;
+}
+
+div.ilx {
+    margin: 5px;
+    float: left;
+    width: 585px;
+    height: 390px;
+    background-size: 100% 100%;
+    border-radius: 12px;
+}
+
+div.clear {
+    clear: both
+}
+
+img.popup {
+    margin: 5px;
+    width: auto;
+    height: 900px;
+    border-radius: 16px;
+}
