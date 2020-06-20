@@ -180,6 +180,8 @@ function search(search, supressDuplicates, sort, randomCount, selected, invert) 
 
         for (groupIndex in cardGroups) {
             let group = cardGroups[groupIndex];
+            let groupTerms = cardGroups[groupIndex].path.slice(0,-1).toLowerCase().split("/");
+
             for (index in group.cards) {
                 let card = group.cards[index];
 
@@ -201,7 +203,7 @@ function search(search, supressDuplicates, sort, randomCount, selected, invert) 
                     continue;
                 }
 
-                let cardTerms = cardGroups[groupIndex].path.concat(card.file).toLowerCase().split("/");
+                let cardTerms = groupTerms.concat(card.file.toLowerCase());
                 var cardSearchTerms;
 
                 if((card.extendedKeywords != undefined && meta.search.useExtendedKeywords != undefined && meta.search.useExtendedKeywords == true)) {
