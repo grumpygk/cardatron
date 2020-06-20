@@ -274,10 +274,10 @@
 </head>
 
 <body>
-    <h3 id="title" ondblclick="changePageTitle()">Card-a-tron!</h3>
+    <h3 id="title" title="click to change page title" onclick="changePageTitle()">Card-a-tron!</h3>
 
-    <input type="text" placeholder="Search.." id="term" size="50">
-    <button id="doSearch" onclick="searchForCards(term.value.trim(), excludeDuplicates.checked, getSelectedSort())"><i
+    <input type="text" title="search terms" placeholder="Search.." id="term" size="50">
+    <button id="doSearch" title="search" onclick="searchForCards(term.value.trim(), excludeDuplicates.checked, getSelectedSort())"><i
             class="fa fa-search"></i></button>
     <input type="checkbox" id="excludeDuplicates">
     <label for="excludeDuplicates">Exclude Duplicates</label>
@@ -285,22 +285,22 @@
     <select id="sort"></select>
     <span style="padding-left:20px"></span>
     <div style="margin-bottom:3px;"></div>
-    <button id="doRandom"
+    <button id="doRandom" title="random draw"
         onclick="getRandomCards(term.value.trim(), excludeDuplicates.checked, getSelectedSort(), randomCount.value.trim(), track.checked, selectedCards.value)"><i
             class="fa fa-random"></i></button>
-    <input type="text" placeholder="#" id="randomCount" size="5" value="1">
+    <input type="text" title="# of cards" placeholder="#" id="randomCount" size="5" value="1">
     <span style="padding-left:5px"></span>
-    <button id="doRedrawRandom"
+    <button id="doRedrawRandom" title="redraw"
         onclick="getRandomCards(term.value.trim(), excludeDuplicates.checked, getSelectedSort(), randomCount.value.trim(), track.checked, selectedCards.value, true)"><i
             class="fa fa-repeat"></i></button>
     <label style="padding-left:5px" for="track">Track</label>
     <input type="checkbox" id="track">
-    <input style="padding-left:5px" type="text" placeholder="Cards Drawn..." id="selectedCards" size="100">
-    <button id="clearTrack" onclick="clearTrack()"><i class="fa fa-times"></i></button>
-    <button id="doSearchExcluded"
+    <input style="padding-left:5px" type="text" title="cards drawn" placeholder="Cards Drawn..." id="selectedCards" size="100">
+    <button id="clearTrack" title="clear cards drawn" onclick="clearTrack()"><i class="fa fa-times"></i></button>
+    <button id="doSearchExcluded" title="show cards drawn"
         onclick="showExcludedCards(term.value.trim(), excludeDuplicates.checked, getSelectedSort(), selectedCards.value)"><i
             class="fa fa-align-left"></i></button>
-    <button id="doSearchRemaining"
+    <button id="doSearchRemaining" title="show cards remaining"
         onclick="showRemaingCards(term.value.trim(), excludeDuplicates.checked, getSelectedSort(), selectedCards.value)"><i
             class="fa fa-align-right"></i></button>
     <div style="margin-bottom:15px;"></div>
