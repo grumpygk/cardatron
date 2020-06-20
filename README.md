@@ -276,3 +276,4 @@ To provide a way to run the application without deploying it to a web server thi
 For displaying the larger image popup when an image is clicked uglipop.js is being used, please see https://flouthoc.github.io/uglipop.js/ for more information
 
 
+Playing card images provided by https://code.google.com/archive/p/vector-playing-cards/
