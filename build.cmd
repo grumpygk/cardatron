@@ -1,2 +1,2 @@
     javac cardIndex.java
-    javac -classpath ".\lib\*" EmbeddedJettyFileServer.java
+    javac -classpath "./lib/*" EmbeddedJettyFileServer.java

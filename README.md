@@ -26,16 +26,18 @@ On windows you can use the batch file indexcard.cmd
 #### Start the local web server
 From the cardatron root folder, run the java executable EmbeddedJettyFileServer 
 
-    java -classpath ".;.\lib\*" EmbeddedJettyFileServer
+On windows: 
+    java -classpath ".;./lib/*" EmbeddedJettyFileServer
+    or use the start.cmd batch command
 
-On windows you can use the batch file start.cmd 
-
-    start.cmd
+On Mac/Linux (':' instead of ';' as path separator): 
+    java -classpath ".:./lib/*" EmbeddedJettyFileServer
+    
 
 By default the EmbeddedJettyFileServer runs on port 8080, serving files from the ./public path and will not show directory listings.  Your can override these by passing the optional parameters {port} {path} {dirs allowed}:
 
-    java -classpath ".;.\lib\*" EmbeddedJettyFileServer 8080 ./public false  -- the defaults
-    java -classpath ".;.\lib\*" EmbeddedJettyFileServer 9090  -- will start the server on port 9090
+    java ... EmbeddedJettyFileServer 8080 ./public false  -- the defaults
+    java ... EmbeddedJettyFileServer 9090  -- will start the server on port 9090
 
 EmbeddedJettyFileServer is provided as a convenience, any web server software can be used.
 
@@ -259,7 +261,7 @@ The sort weight from the image size and orientation are combined to allow for so
 To build the java code you will need to have the java SDK installed (version 1.8+)
 
     javac cardIndex.java
-    javac -classpath ".\lib\*" EmbeddedJettyFileServer.java
+    javac -classpath "./lib/*" EmbeddedJettyFileServer.java
 
     build.cmd - executes both compile commands
 
@@ -268,7 +270,7 @@ To build the java code you will need to have the java SDK installed (version 1.8
 
     indexcards.cmd - Runs card indexing redirecting output to the file 'cards.json' in the 'public/data' folder.  Executes the command 'java CardIndex public > public/data/cards.json'
 
-    start.cmd - Runs the local web server. Executes the command 'java -classpath ".;.\lib\*" EmbeddedJettyFileServer'
+    start.cmd - Runs the local web server. Executes the command 'java -classpath ".;./lib/*" EmbeddedJettyFileServer'
     
 ## Other code used (not my code)  
 To provide a way to run the application without deploying it to a web server this project makes use of the Jetty Web Server, please refer to https://www.eclipse.org/jetty/ for additional information

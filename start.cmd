@@ -1,1 +1,1 @@
-java -classpath ".;.\lib\*" EmbeddedJettyFileServer %1 %2 %3
+java -classpath ".;./lib/*" EmbeddedJettyFileServer %1 %2 %3
