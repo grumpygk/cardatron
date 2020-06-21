@@ -37,18 +37,18 @@
     },
     {
         "images":["A.png"],
-        "keywords":["ace"]
+        "keywords":["ace","face"]
     },
     {
         "images":["K.png"],
-        "keywords":["king"]
+        "keywords":["king","face"]
     },
     {
         "images":["Q.png"],
-        "keywords":["queen"]
+        "keywords":["queen","face"]
     },
     {
         "images":["J.png"],
-        "keywords":["jack"]
+        "keywords":["jack","face"]
     }
 ]
