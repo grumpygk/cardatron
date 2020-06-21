@@ -44,6 +44,45 @@ EmbeddedJettyFileServer is provided as a convenience, any web server software ca
 #### Using a browser navigate to localhost:8080
 You should now see the cardatron web page
 
+# Search Basics
+The simplest search is searching on one or more words separated space
+
+    fire sword
+
+The follow characters can be used in search queries
+
+    . = start or ends with
+    | = or
+    & = query separator (and) 
+    : = named field
+    - = exclude
+
+These can be changed in the meta.json config file if desired.
+
+So 
+
+    cardType:artifact gun.|pistol -trusty & cardType:gear gun|pistol 
+
+Executes 2 queries 
+
+    cardType:artifact gun.|pistol -trusty
+
+which looks for items with the cardType of 'artifact' that have words ending with 'gun' or containing 'pistol', but not containing 'trusty'
+
+and 
+
+    cardType:gear gun|pistol
+ 
+ which looks for items with a cardType of 'gear' that contain 'gun' or 'pistol'
+
+ and combines both results.
+
+# Bookmarks
+Booking marking to a great way to save searches for recall them later, to help facilitate meaningful bookmarks, you can rename the page by clicking on the Title at the top of the search page.
+
+### Execution of bookmarked queries 
+When you recall a search with a bookmark it reloads all the search criteria except the item track, it does not execute the query.  If you would like to have the query execute you can add '&execute=true' to the end of the bookmark url.
+
 # Additional way to add keywords for images
 ## keywords.json file
 Some images may have more information that that you may wish to include as keywords than make sense in a file name or folder structure, to handle this you can place a ```keywords.json``` file in each folder containing images that provide additional keywords that can be searched on or included on card tool tips.
@@ -58,7 +97,7 @@ The keywords.json file supports adding one or more keywords to one or more image
     ]
 
 these additional keywords are referred to as extended keywords.
-    
+
 # Customization
 
 ## Meta File
@@ -276,6 +315,5 @@ To build the java code you will need to have the java SDK installed (version 1.8
 To provide a way to run the application without deploying it to a web server this project makes use of the Jetty Web Server, please refer to https://www.eclipse.org/jetty/ for additional information
 
 For displaying the larger image popup when an image is clicked uglipop.js is being used, please see https://flouthoc.github.io/uglipop.js/ for more information
-
 
 Playing card images provided by https://code.google.com/archive/p/vector-playing-cards/

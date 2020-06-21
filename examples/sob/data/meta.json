@@ -39,7 +39,7 @@
         },            
 
         "sort":{
-            "default":"Weighted Names",
+            "default":"Size and Name",
             "show":true
         },
 
@@ -56,7 +56,7 @@
                     "checkFields":["setName","groupName","name"]
                 }
             },
-            {"name": "Weighted Names",
+            {"name": "Size, Set, Group,Name",
                 "sort":[
                     {"property":"sortWeight", "computed":true, "direction":"ascending","groupBy":true},
                     {"property":"setName","direction":"ascending","groupBy":false},
@@ -65,6 +65,15 @@
                 ],
                 "duplicates":{
                     "checkFields":["setName","groupName","name"]
+                }
+            },
+            {"name": "Size and Name",
+                "sort":[
+                    {"property":"sortWeight", "computed":true, "direction":"ascending","groupBy":true},
+                    {"property":"name","direction":"ascending","groupBy":false}
+                ],
+                "duplicates":{
+                    "checkFields":[]
                 }
             }
         ],
