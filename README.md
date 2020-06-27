@@ -26,21 +26,62 @@ On windows you can use the batch file indexcard.cmd
 #### Start the local web server
 From the cardatron root folder, run the java executable EmbeddedJettyFileServer 
 
-    java -classpath ".;.\lib\*" EmbeddedJettyFileServer
+On windows: 
+    java -classpath ".;./lib/*" EmbeddedJettyFileServer
+    or use the start.cmd batch command
 
-On windows you can use the batch file start.cmd 
-
-    start.cmd
+On Mac/Linux (':' instead of ';' as path separator): 
+    java -classpath ".:./lib/*" EmbeddedJettyFileServer
+    
 
 By default the EmbeddedJettyFileServer runs on port 8080, serving files from the ./public path and will not show directory listings.  Your can override these by passing the optional parameters {port} {path} {dirs allowed}:
 
-    java -classpath ".;.\lib\*" EmbeddedJettyFileServer 8080 ./public false  -- the defaults
-    java -classpath ".;.\lib\*" EmbeddedJettyFileServer 9090  -- will start the server on port 9090
+    java ... EmbeddedJettyFileServer 8080 ./public false  -- the defaults
+    java ... EmbeddedJettyFileServer 9090  -- will start the server on port 9090
 
 EmbeddedJettyFileServer is provided as a convenience, any web server software can be used.
 
 #### Using a browser navigate to localhost:8080
 You should now see the cardatron web page
+
+# Search Basics
+The simplest search is searching on one or more words separated space
+
+    fire sword
+
+The follow characters can be used in search queries
+
+    . = start or ends with
+    | = or
+    & = query separator (and) 
+    : = named field
+    - = exclude
+
+These can be changed in the meta.json config file if desired.
+
+So 
+
+    cardType:artifact gun.|pistol -trusty & cardType:gear gun|pistol 
+
+Executes 2 queries 
+
+    cardType:artifact gun.|pistol -trusty
+
+which looks for items with the cardType of 'artifact' that have words ending with 'gun' or containing 'pistol', but not containing 'trusty'
+
+and 
+
+    cardType:gear gun|pistol
+ 
+ which looks for items with a cardType of 'gear' that contain 'gun' or 'pistol'
+
+ and combines both results.
+
+# Bookmarks
+Booking marking to a great way to save searches for recall them later, to help facilitate meaningful bookmarks, you can rename the page by clicking on the Title at the top of the search page.
+
+### Execution of bookmarked queries 
+When you recall a search with a bookmark it reloads all the search criteria except the item track, it does not execute the query.  If you would like to have the query execute you can add '&execute=true' to the end of the bookmark url.
 
 # Additional way to add keywords for images
 ## keywords.json file
@@ -56,7 +97,7 @@ The keywords.json file supports adding one or more keywords to one or more image
     ]
 
 these additional keywords are referred to as extended keywords.
-    
+
 # Customization
 
 ## Meta File
@@ -259,7 +300,7 @@ The sort weight from the image size and orientation are combined to allow for so
 To build the java code you will need to have the java SDK installed (version 1.8+)
 
     javac cardIndex.java
-    javac -classpath ".\lib\*" EmbeddedJettyFileServer.java
+    javac -classpath "./lib/*" EmbeddedJettyFileServer.java
 
     build.cmd - executes both compile commands
 
@@ -268,7 +309,7 @@ To build the java code you will need to have the java SDK installed (version 1.8
 
     indexcards.cmd - Runs card indexing redirecting output to the file 'cards.json' in the 'public/data' folder.  Executes the command 'java CardIndex public > public/data/cards.json'
 
-    start.cmd - Runs the local web server. Executes the command 'java -classpath ".;.\lib\*" EmbeddedJettyFileServer'
+    start.cmd - Runs the local web server. Executes the command 'java -classpath ".;./lib/*" EmbeddedJettyFileServer'
     
     makekeywords.cmd {path} - Create keywords file for the directory passed in as 1st paramater.
     java MakeKeywordFile {path}
@@ -277,6 +318,5 @@ To build the java code you will need to have the java SDK installed (version 1.8
 To provide a way to run the application without deploying it to a web server this project makes use of the Jetty Web Server, please refer to https://www.eclipse.org/jetty/ for additional information
 
 For displaying the larger image popup when an image is clicked uglipop.js is being used, please see https://flouthoc.github.io/uglipop.js/ for more information
-
 
 Playing card images provided by https://code.google.com/archive/p/vector-playing-cards/
