@@ -270,6 +270,9 @@ To build the java code you will need to have the java SDK installed (version 1.8
 
     start.cmd - Runs the local web server. Executes the command 'java -classpath ".;.\lib\*" EmbeddedJettyFileServer'
     
+    makekeywords.cmd {path} - Create keywords file for the directory passed in as 1st paramater.
+    java MakeKeywordFile {path}
+
 ## Other code used (not my code)  
 To provide a way to run the application without deploying it to a web server this project makes use of the Jetty Web Server, please refer to https://www.eclipse.org/jetty/ for additional information
 
