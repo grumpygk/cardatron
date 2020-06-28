@@ -1,3 +1,4 @@
+var waitForKeywordLoad = false;
 var cardGroups = [];
 var meta = {};
 
@@ -5,7 +6,7 @@ var searchProperties = [];
 var keywordOffset = 0;
 var toolTipProperties = [];
 
-function loadJSON(file, callback) {
+function loadJSON(file, success, failure) {
 
     var xobj = new XMLHttpRequest();
     xobj.overrideMimeType("application/json");
@@ -13,7 +14,9 @@ function loadJSON(file, callback) {
     xobj.onreadystatechange = function () {
         if (xobj.readyState == 4 && xobj.status == "200") {
             // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
-            callback(xobj.responseText);
+            success(xobj.responseText);
+        } else if(typeof failure !== 'undefined') {
+            failure(xobj);
         }
     };
     xobj.send(null);
@@ -80,11 +83,17 @@ function init(cardData, metaData) {
     toolTipProperties = getPropertyPositions(meta.toolTip.properties);
     initSorters();
 
+    waitForKeywordLoad = (meta.search.useExtendedKeywords == true || meta.toolTip.useExtendedKeywords == true) 
+    && window.location.search.search("&execute=true") > -1;
+
+    processKeywordFiles();
+
+}
+
+function ready() {
     if (pageInit) {
         pageInit();
     }
-
-    processKeywordFiles();
 }
 
 function processKeyWordFile(group) {
@@ -107,18 +116,41 @@ function processKeyWordFile(group) {
                         card.extendedKeywords = card.extendedKeywords.concat(adjustedKeywords);
                     }
 
-                    console.log(card);
+                    group.keywordsReady = true;
+                    checkReadyForInit();
                 }
             }
         }
 
+    }, function (xobj){
+        group.keywordsReady = true;
+        checkReadyForInit();
     });
+}
 
+function checkReadyForInit() {
+    if(waitForKeywordLoad && allKeywordFilesProcessed(cardGroups)) {
+        waitForKeywordLoad = false;
+        ready();
+    }
+}
+
+function allKeywordFilesProcessed(obj)
+{
+  for(var o in obj)
+      if(!obj[o].keywordsReady) return false;
+    
+  return true;
 }
 
 function processKeywordFiles() {
     for (groupIndex in cardGroups) {
+        cardGroups[groupIndex].keywordsReady = false;    
         processKeyWordFile(cardGroups[groupIndex]);
+    }
+    
+    if(!waitForKeywordLoad) {
+        ready();
     }
 }
 
