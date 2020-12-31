@@ -4,13 +4,17 @@ Cardatron is a web application for handling large collections of gaming cards.
 #### Disclaimer
 This project is aimed at non-developers, I did not want to complicate things by using any development technology that was not absolutely necessary.  So at this point in time, it is not a traditional project, it does not follow normal development standards or processes.  It is a work in progress and may eventually evolve into a ***normal*** project. 
 
+### Requirements
+You must have java 1.8 or higher installed on your system 
+You need some way to scan images of your cards into jpg or png files
+
 ## Usage
 Scan your cards into image files and place them into a logical folder structure, the file name and folder names will make up the keywords you will be able to search by.  When naming the image files avoid using special characters and spaces, if you plan on keeping multiple copies of a card images select a character to separate the number from the rest of the file name.  
 
 Example: 
 
-    game\cart_type\filename_replace_spaces.jpg
-    game\cart_type\filename_replace_spaces-2.jpg
+    game\card_type\filename_replace_spaces.jpg
+    game\card_type\filename_replace_spaces-2.jpg
 
 #### Copy the folders with the images into the public\images folder.
 
@@ -168,8 +172,8 @@ So for this meta data the duplicate separator is defined as '-', so the '-' char
 
 Example:
 
-    game\cart_type\filename.jpg   -- first copy of card
-    game\cart_type\filename-2.jpg -- second copy of card, can be excluded from searches using 'exclude duplicates' option.
+    game\card_type\filename.jpg   -- first copy of card
+    game\card_type\filename-2.jpg -- second copy of card, can be excluded from searches using 'exclude duplicates' option.
 
 #### search.querySeparator - character that allows multiple queries to be combined in one search request.  
 So for this meta data the querySeparator is defined as '&', so as an example:
