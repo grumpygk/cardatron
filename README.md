@@ -5,8 +5,8 @@ Cardatron is a web application for handling large collections of gaming cards.
 This project is aimed at non-developers, I did not want to complicate things by using any development technology that was not absolutely necessary.  So at this point in time, it is not a traditional project, it does not follow normal development standards or processes.  It is a work in progress and may eventually evolve into a ***normal*** project. 
 
 ### Requirements
-You must have java 1.8 or higher installed on your system 
-You need some way to scan images of your cards into jpg or png files
+1. You must have java 1.8 or higher installed on your system 
+2. You need some way to scan images of your cards into jpg or png files
 
 ## Usage
 Scan your cards into image files and place them into a logical folder structure, the file name and folder names will make up the keywords you will be able to search by.  When naming the image files avoid using special characters and spaces, if you plan on keeping multiple copies of a card images select a character to separate the number from the rest of the file name.  
@@ -201,7 +201,7 @@ Example:
   You might find other creative uses for replacements.
 
 ### Speaking of free functionality - 'or' condition - the '|' character in searches
-I mentioned how regex is used bt the javascript search functionality, well another benefit of this is that when I wanted to enable 'or' functionality I did not have to code it.  The '|' character in regex indicates an or condition.
+I mentioned how regex is used by the javascript search functionality, well another benefit of this is that when I wanted to enable 'or' functionality I did not have to code it.  The '|' character in regex indicates an or condition.
 
 Example:
 
